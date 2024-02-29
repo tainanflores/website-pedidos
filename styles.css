@@ -1,0 +1,583 @@
+* {
+    font-family: "Roboto", "Arial", sans-serif; /* Substitua "Arial" pela fonte desejada */
+}
+
+html {
+    overflow: hidden;
+}
+
+body {
+    background-color: #f1f1f1;
+    overflow: hidden;
+}
+
+h5 {
+    margin-top: 0.5rem;
+}
+
+.galeria {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    align-items:center;
+    margin: 50px 0;
+}
+
+.conteudo {
+    width: 20%;
+    margin: 15px;
+    box-sizing: border-box;
+    float: left;
+    border-radius: 10px;
+    cursor: pointer;
+    padding-top: 10px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+    0 10px 10px rgba(0, 0, 0, 0.22);
+    transition: .4s;
+    background: #f2f2f2;
+}
+
+.conteudo:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
+    transform: translate(0px, -8px);
+}
+
+.conteudo img{
+    border-radius: 20px;
+    width: 122px;
+    height: 122px;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+}
+.conteudo p{
+    text-align: center;
+    color: #b2bec3;
+    padding-top: 0 8px;
+}
+
+/* Cabeçalho com position: fixed */
+header {
+    left: 25px;
+    margin-left: 0px;
+    width: 90%;
+    /* Preenche a largura da janela */
+    background-color: #f1f1f1;
+    z-index: 90;
+}
+
+header.active {
+    margin-left: 225px;
+    width: 72%;
+}
+
+.cor-empresa {
+    background-color: initial;
+}
+
+/* Container para alinhar elementos dentro do cabeçalho */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    max-width: 720x;
+    /* Largura máxima desejada */
+    margin: 0 auto;
+    /* Centraliza horizontalmente */
+}
+
+/* Campo de pesquisa */
+.search-input {
+    flex: 1;
+    /* Cresce para ocupar o espaço disponível */
+    margin-right: 10px;
+}
+
+.svg-search-loading {
+    position: absolute;
+    right: 10px;
+    display: none;
+}
+
+/* Ícone da sacola de compras */
+.cart-icon {
+    padding-top: 5px;
+    flex-shrink: 0;
+    /* Não encolhe */
+}
+
+main {
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    /* Adiciona uma barra de rolagem vertical apenas quando necessário */
+    max-height: calc(90vh - 60px);
+    /* Ajuste a altura conforme necessário, considerando a altura do seu header */
+    margin-left: 24px;
+    transition: left 0.3s;
+    background-color: #f1f1f1;
+}
+
+main.active {
+    margin-left: 250px;
+}
+
+/* Estilo personalizado para a barra de rolagem do elemento main */
+main::-webkit-scrollbar {
+    width: 8px;
+    /* Largura da barra de rolagem */
+}
+
+/* Estilo da alça da barra de rolagem do elemento main */
+main::-webkit-scrollbar-thumb {
+    background-color: #f1f1f1;
+    /* Cor da alça da barra de rolagem */
+    border-radius: 4px;
+    /* Borda arredondada da alça da barra de rolagem */
+}
+
+/* Estilo do fundo da barra de rolagem do elemento main */
+main::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    /* Cor de fundo da barra de rolagem */
+}
+
+.rounded-circle {
+    /* border: 2px solid#a1a1a1; */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Barra lateral */
+#sidebar {
+    /* display: none; */
+    /* Outros estilos da sidebar aqui */
+    position: fixed;
+    /* Garante que a altura seja relativa ao elemento pai */
+    height: 100%;
+    /* Ajusta a altura da sidebar para 100% do elemento pai */
+    width: 220px;
+    top: 0;
+    left: -220px;
+    transition: left 0.3s;
+    background-color: #343a40;
+    color: white;
+    border-top-right-radius: 10px;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
+    z-index: 98;
+}
+
+#sidebar.active {
+    left: 0px;
+}
+
+.sidebar-header {
+    text-align: center;
+    padding: 0px;
+    padding-right: 10px;
+    max-height: 300px;
+}
+
+.sidebar-header h4 {
+    margin: 0;
+}
+
+#sidebar ul.nav.flex-column {
+    margin-top: 10px;
+}
+
+#sidebar ul.nav.flex-column .nav-item {
+    padding: 0;
+    margin-bottom: 4px;
+    /* border-bottom: 1px solid #ccc; */
+    padding-bottom: 4px;
+    max-height: 31px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+}
+
+#sidebar ul.nav.flex-column .nav-link {
+    color: #272727;
+    margin: 0;
+    padding: 0px;
+}
+
+#sidebar ul.nav.flex-column .nav-link:hover {
+    color: white;
+}
+
+#sidebar ul.nav.flex-column button:hover {
+    background-color: #495057;
+}
+
+/* Estilo para a barra de rolagem da barra lateral */
+.sidebar-scroll {
+    max-height: calc(95vh - 150px);
+    /* Ajusta a altura máxima para o espaço disponível, subtraindo a altura do header */
+    /* Altura máxima da barra lateral */
+    overflow-y: auto;
+    /* Adicionar barra de rolagem vertical quando necessário */
+}
+
+/* Estilo personalizado para a barra de rolagem */
+.sidebar-scroll::-webkit-scrollbar {
+    width: 6px;
+    /* Largura da barra de rolagem */
+}
+
+/* Estilo da alça da barra de rolagem */
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background-color: #d2d2d2;
+    /* Cor da alça da barra de rolagem */
+    border-radius: 4px;
+    /* Borda arredondada da alça da barra de rolagem */
+}
+
+/* Estilo do fundo da barra de rolagem */
+.sidebar-scroll::-webkit-scrollbar-track {
+    background-color: inherit;
+    /* Cor de fundo da barra de rolagem */
+}
+
+/* Botão de alternância da barra lateral */
+.toggle-button {
+    /* background-color: #6c757d; */
+    position: fixed;
+    top: 7px;
+    left: 5px;
+    z-index: 99;
+    transition: left 0.3s;
+    border-radius: 5px;
+}
+.toggle-button:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+.toggle-button.active {
+    /* background-color: #6c757d; */
+    left: 170px;
+}
+
+/* Conteúdo */
+.content {
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 10px;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
+}
+
+.content h1 {
+    margin-bottom: 20px;
+}
+
+.card {
+    margin-bottom: 0;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0.5rem;
+}
+
+.is-hidden {
+    display: none;
+}
+
+/* Classe CSS para limitar o tamanho da imagem do produto */
+.card-img {
+    height: 100%;
+    width: auto;
+    /* Mantém a proporção da imagem */
+}
+
+.categoria-titulo {
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    font-size: 20px;
+    /* Tamanho da fonte */
+    font-weight: bold;
+    /* Peso da fonte (negrito) */
+    color: #454545;
+    /* Cor do texto */
+    margin-bottom: 10px;
+    /* Espaço inferior para separação */
+    /* border-bottom: 2px solid #333; */
+    /* Linha de separação na parte inferior */
+    padding-bottom: 5px;
+    /* Espaçamento entre o texto e a linha */
+}
+.categoria-titulo h3 {
+    font-size: 1.5rem; /* Tamanho da fonte do título da categoria */
+    color: #333; /* Cor do texto */
+    border-bottom: 2px solid #ccc; /* Linha separadora abaixo do título */
+    padding-bottom: 5px; /* Espaçamento abaixo da linha */
+}
+
+/* Estilo para a classe preco-card no canto inferior direito */
+.preco-card {
+    /* position: absolute; */
+    bottom: 0;
+    left: 0;
+    margin: 10px;
+    /* Adicione margem para espaçamento */
+}
+
+.btn-comprar {
+    font-size: 0.7rem;
+}
+
+.footer-icon {
+    max-width: 30px;
+}
+
+/* Classe para exibir a barra lateral em telas maiores que 768px (tamanho de um tablet, por exemplo) */
+@media (min-width: 768px) {
+    #sidebar {
+        left: 0;
+    }
+
+    header {
+        margin-left: 230px;
+    }
+
+    main {
+        margin-left: 250px;
+    }
+}
+
+@media screen and (max-width: 480px){
+    main {
+        margin: 5px;
+        padding: 2px;
+    }
+    .content{
+        margin: 0;
+        padding: 0;
+    };
+}
+/* Estilo para a descrição do produto no modal com quebra de linha automática */
+.modal-body p {
+    max-width: 100%;
+    overflow: hidden;
+    word-wrap: break-word;
+    /* Adiciona quebra de linha automática */
+}
+
+/* Estilo para centralizar a imagem dentro do modal */
+.modal-body img {
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+}
+
+.modal-header .close {
+    position: absolute;
+    top: 0.4rem;
+    right: 1rem;
+    color: #ffffff;
+}
+
+/* Estilo para o título do modal */
+.modal-title {
+    text-align: center;
+    background-color: #6c757d;
+    /* Cor de fundo cinza */
+    color: white;
+    /* Cor do texto */
+    padding: 5px 0;
+    /* Espaçamento interno superior e inferior para centralização */
+    margin: 0;
+    /* Zera a margem para remover o espaço em branco ao redor do título */
+    width: 100%;
+    color: white;
+}
+
+
+.texto-cortado {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Limite o texto a 2 linhas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    /* Define o comportamento de quebra de linha padrão */
+    text-overflow: ellipsis;
+    /* Adiciona uma elipse no final do texto cortado */
+}
+
+#sacolaModal {
+    overflow-y: hidden;
+    /* Oculta a barra de rolagem na janela toda */
+}
+
+#confirmacaoModalContent {
+    max-width: 200px;
+}
+
+.modal-body {
+    max-height: 400px;
+    /* Defina a altura máxima da sacola conforme necessário */
+    overflow-y: auto;
+    /* Adiciona uma barra de rolagem somente dentro da sacola */
+}
+
+.total-sacola {
+    position: sticky;
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.modal-footer {
+    position: relative;
+    bottom: 0;
+    background-color: #fff;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+/* Estilo personalizado para a barra de rolagem */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+    /* Largura da barra de rolagem */
+}
+
+/* Estilo da alça da barra de rolagem */
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: #373738;
+    /* Cor da alça da barra de rolagem */
+    border-radius: 4px;
+    /* Borda arredondada da alça da barra de rolagem */
+}
+
+/* Estilo do fundo da barra de rolagem */
+.modal-body::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    /* Cor de fundo da barra de rolagem */
+}
+
+/* #productModal .modal-dialog {
+    max-width:300px;
+} */
+
+.remover-produto {
+    position: relative;
+    left: -15px;
+}
+
+#loadingPopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    color: white;
+    display: none;
+}
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+}
+
+.endereco-card {
+    width: 100%;
+}
+
+/* Estilo para a lista com barra de rolagem e limite de altura */
+#listaBairros {
+    position: relative;
+    max-height: 100px; /* Defina a altura máxima desejada */
+    overflow-y: auto; /* Adiciona uma barra de rolagem vertical quando necessário */
+    border: 1px solid #ccc; /* Apenas para visualização, pode ser removido */
+    padding: 10px; /* Adicione algum espaço interno para melhorar a aparência */
+}
+
+/* Estilo para os itens da lista */
+#listaBairros li {
+    list-style: none; /* Remove os marcadores de lista padrão */
+    margin: 5px 0; /* Adicione algum espaçamento entre os itens da lista */
+}
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Classe CSS para animação de movimento para a direita */
+@keyframes slideRight {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+}
+
+/* Classe CSS para animação de movimento para a esquerda */
+@keyframes slideLeft {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0); }
+}
+
+/* Aplica a animação de movimento para a direita */
+.slide-right {
+    animation: slideRight 0.5s ease forwards;
+}
+
+/* Aplica a animação de movimento para a esquerda */
+.slide-left {
+    animation: slideLeft 0.5s ease forwards;
+}
+
+#myform {
+    text-align: center;
+    padding: 5px;
+    margin: 2%;
+}
+.qty {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    border: none;
+    color: green;
+    font-weight: 900;
+}
+/* input.qtyplus { width:25px; height:25px;}
+input.qtyminus { width:25px; height:25px;} */
+
+input.qtyminus, input.qtyplus {
+    width: 20px;
+    background: inherit; 
+    border-radius: 20px;
+    padding: 0;
+    border:none;
+    /* border: none; */
+    display: inline-block;
+    /* vertical-align: middle; */
+    text-align: center;
+    font-weight: 900;
+    color: #272727;
+    background-color: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+

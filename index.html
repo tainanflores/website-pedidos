@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Página de Pedidos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="row">
+        <header class="p-1 float-right">
+            <div class="container-fluid">
+                <div class="row justify-content-end">
+                    
+                    <div class="d-flex col-9 align-items-center" style="padding-left: 60px;">
+                        <img src="svg/Spinner-0.6s-41px.svg" class="svg-search-loading">
+                        <input type="text" id="filterInput" class="form-control rounded-pill" placeholder="Pesquisar">
+                    </div>
+                    <div class="col-3 d-flex justify-content-end pr-0">
+                        <!-- Valor total -->
+                        <!-- <p class="text-right mt-2"><strong>Total: $X.XX</strong></p> -->
+                        <!-- Botão para abrir a sacola -->
+                        <button id="sacolaButton" type="button" class="btn" data-toggle="modal"
+                            data-target="#sacolaModal" style="background-color: #f1f1f1;">
+                            <!-- Ícone da sacola de compras com indicador -->
+                            <div class="d-flex align-items-center justify-content-end">
+                                <img src="cart.png" alt="Sacola de Compras" class="footer-icon">
+                                <span id="carrinho-badge"
+                                    class="badge badge-pill badge-primary">3</span><!-- Indicador de itens no carrinho -->
+                            </div>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+    </div>
+    
+    <div class="app">
+    </div>
+    <!-- Footer Fixo -->
+    <footer class="footer fixed-bottom bg-light">
+        <p class="m-0" style="color: darkslategray; text-align: center;">&copy; 2024 PedidoZap, Todos direitos
+            reservados.</p>
+    </footer>
+    <!-- Popup para exibir detalhes do produto -->
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary p-1">
+                    <h5 class="modal-title small font-weight-bold" id="productModalLabel">Detalhes do Produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Conteúdo do produto detalhado aqui -->
+                    <h4 id="productName"></h4>
+                    <span style="width: auto;">
+                        <p id="productDescription"></p>
+                    </span>
+                    <img id="productImage" src="" alt="Imagem do Produto" class="img-fluid">
+                    <p>Preço: <span id="productPrice"></span></p>
+                    <label for="productQuantity">Quantidade:</label>
+                    <form class="quantity" action="#">
+                        <input type="button" value="-" data-index="0" class="qtyminus minus p-0 m-0" field="quantity">
+                        <input type="number" name="quantity" value="1" data-index="0" class="qty quantidade-produto">
+                        <input type="button" value="+" data-index="0" class="qtyplus plus p-0 m-0" field="quantity">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary btn-add-to-cart" id="addToCartButton">Adicionar a
+                        Sacola</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Adição ao Carrinho -->
+    <div class="modal fade" id="confirmacaoModal" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog d-flex justify-content-center" role="document">
+            <div id="confirmacaoModalContent" class="modal-content">
+                <button type="button" class="close align-self-end mr-1" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-body m-0 pb-0">
+                    <div id="sacolaFeliz">
+                        <img id="sacolaVaziaImg" src="sacolafeliz.png" alt="Imagem de uma Sacola feliz"
+                            class="img-fluid small" style="opacity: 0.6; max-width: 150px;">
+                    </div>
+                    <p class="mb-0 font-weight-bold">O produto foi adicionado a sacola.</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Continuar Comprando</button>
+                    <button type="button" class="btn btn-secondary" id="abrirSacolaBtn" style="width: 100%;">Abrir
+                        Sacola</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para exibir a sacola -->
+    <div id="sacolaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="sacolaModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="sacolaContent">
+                <div class="modal-header bg-secondary p-0">
+                    <h5 class="modal-title">Minha Sacola</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body m-0">
+                    <div id="sacolaVazia">
+                        <img id="sacolaVaziaImg" src="sacolatriste.png" alt="Imagem de uma Sacola Triste"
+                            class="img-fluid" style="opacity: 0.3">
+                    </div>
+                    <ul id="sacolaLista" class="list-group">
+
+                        <!-- Itens da sacola serão adicionados aqui -->
+                    </ul>
+                </div>
+                <div class="modal-footer" id="sacolaFooter">
+                    <div class="sacolaTotal"></div>
+                    <button type="button" class="btn btn-info" id="finalizarCompra"
+                        data-dismiss="modal">Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingPopup" class="is-hidden">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="finalizarPedidoModal" tabindex="-1" role="dialog" aria-labelledby="pedidoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary p-0">
+                    <h5 class="modal-title">Contato</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Telefone e Nome Completo -->
+                    <div class="form-group">
+                        <label for="telefone"><strong>Telefone</strong> (WhatsApp)</label>
+                        <input type="text" class="form-control" id="telefone" oninput="formatTelefone(this)"
+                            maxlength="15" placeholder="(99) 9 9999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label for="nome"><strong>Nome Completo</strong></label>
+                        <input type="text" class="form-control" id="nome">
+                    </div>
+                </div>
+                <div class="modal-footer" id="sacolaFooter">
+                    <div class="sacolaTotal"></div>
+                    <!-- Botões de Confirmar Pedido e Voltar -->
+                    <button class="btn btn-info" id="continuarEndereco">Continuar</button>
+                    <button class="btn btn-secondary" id="voltarSacola" class="close" data-dismiss="modal"
+                        aria-label="Close">Voltar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="enderecoPedidoModal" tabindex="-1" role="dialog" aria-labelledby="pedidoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary p-0">
+                    <h5 class="modal-title">Endereço</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Opções de Retirada e Entrega -->
+                    <div class="form-group">
+                        <label for="opcaoEntrega"><strong>Escolha uma opção:</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="opcaoEntrega" id="retirada"
+                                value="retirada" disabled>
+                            <label class="form-check-label" for="retirada">Retirada</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="opcaoEntrega" id="entrega"
+                                value="entrega" disabled>
+                            <label class="form-check-label" for="entrega">Entrega</label>
+                        </div>
+                    </div>
+
+                    <!-- Card para Endereço da Loja (inicialmente oculto) -->
+                    <div class="card" id="lojaCard" style="display: none;">
+                        <div class="card-body p-2 small">
+                            <h6 class="card-title"><strong>Endereço da Loja</strong></h5>
+                                <p class="card-text" id="lojaEndereco"></p>
+                        </div>
+                    </div>
+
+                    <div id="opcoesEndereco" class="form-group" style="display: none;">
+                        <!-- Estrutura para a lista de endereços -->
+                        <div id="listaEnderecos" class="enderecoPadraoContainer form-check">
+                            <!-- Iterar sobre os endereços e criar opções de rádio -->
+                        </div>
+                        <!-- <div class="form-check">
+                            <input class="form-check-input" type="radio" name="opcaoEndereco" id="enderecoNovo"
+                                value="enderecoNovo">
+                            <label class="form-check-label" for="enderecoNovo">Novo Endereço</label>
+                        </div> -->
+                        <!-- Campos para Outro Endereço (inicialmente ocultos) -->
+                        <!-- <div id="enderecoCliente" style="display: none;">
+                            <div class="form-group">
+                                <label for="rua">Rua</label>
+                                <input type="text" class="form-control" id="rua">
+                            </div>
+                            <div class="form-group">
+                                <label for="numero">Número</label>
+                                <input type="text" class="form-control" id="numero">
+                            </div>
+                            <div class="form-group">
+                                <label for="complemento">Complemento</label>
+                                <input type="text" class="form-control" id="complemento">
+                            </div>
+                            <div class="form-group">
+                                <label for="bairro">Bairro</label>
+                                <div class="dropdown">
+                                    <ul id="listaBairros" class="dropdown-menu" style="display: none;"></ul>
+                                    <input type="text" class="form-control" id="bairroPesquisa"
+                                        placeholder="Pesquisar bairro">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cidade">Cidade</label>
+                                <input type="text" class="form-control" id="cidade" value="Divinópolis" readonly>
+                            </div>
+                        </div>
+                    </div> -->
+                        <div id="taxaEntrega" class="taxaEntrega" style="display: none;">
+                            <div class="btn btn-warning disabled" disabled>
+                                <strong>Taxa Entrega: <span id="taxa-entrega">0.00</span></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="sacolaFooter">
+                        <div class="sacolaTotal"></div>
+                        <!-- Botões de Confirmar Pedido e Voltar -->
+                        <button class="btn btn-info" id="continuarPagamento">Continuar</button>
+                        <button class="btn btn-secondary" id="voltarContato" class="close" data-dismiss="modal"
+                            aria-label="Close">Voltar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Forma de Pagamento-->
+    <div class="modal fade" id="escolherPagamentoModal" tabindex="-1" role="dialog"
+        aria-labelledby="escolherPagamentoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary p-0">
+                    <h5 class="modal-title">Finalizar Pedido</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Forma de Pagamento -->
+                    <div class="form-group">
+                        <label for="formaPagamento"><strong>Forma de Pagamento</strong></label>
+                        <select class="form-control" id="formaPagamento">
+                            <option value="" disabled selected>Selecione a forma de pagamento</option>
+                            <option value="1">Dinheiro</option>
+                            <option value="14">PIX</option>
+                            <option value="6">Cartão de Crédito</option>
+                            <option value="7">Cartão de Débito</option>
+                        </select>
+                    </div>
+
+                    <!-- Campo "Troco para quanto?" -->
+                    <div class="form-group" id="trocoDiv" style="display: none;">
+                        <label for="troco">Troco para quanto?</label>
+                        <input type="number" placeholder="Digite 0 se não precisar de troco" class="form-control"
+                            id="troco">
+                    </div>
+                    <div class="form-group" id="observacaoDiv" bis_skin_checked="1">
+                        <label for="observacao">Observação:</label>
+                        <textarea class="form-control" id="observacao" rows="3"
+                            placeholder="Digite sua observação aqui"></textarea>
+                    </div>
+                    <div class="modal-footer" id="sacolaFooter">
+                        <div class="sacolaTotal"></div>
+                        <!-- Botões de Confirmar Pedido e Voltar -->
+                        <button class="btn btn-info" id="confirmarPedido">Confirmar pedido</button>
+                        <button class="btn btn-secondary" id="voltarDados" class="close" data-dismiss="modal"
+                            aria-label="Close">Voltar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Ou inclua o JavaScript (opcional) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
