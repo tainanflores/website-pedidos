@@ -1,5 +1,6 @@
 * {
-    font-family: "Roboto", "Arial", sans-serif; /* Substitua "Arial" pela fonte desejada */
+    font-family: "Roboto", "Arial", sans-serif;
+    /* Substitua "Arial" pela fonte desejada */
 }
 
 html {
@@ -20,7 +21,7 @@ h5 {
     flex-wrap: wrap;
     width: 100%;
     justify-content: center;
-    align-items:center;
+    align-items: center;
     margin: 50px 0;
 }
 
@@ -33,18 +34,18 @@ h5 {
     cursor: pointer;
     padding-top: 10px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-    0 10px 10px rgba(0, 0, 0, 0.22);
+        0 10px 10px rgba(0, 0, 0, 0.22);
     transition: .4s;
     background: #f2f2f2;
 }
 
 .conteudo:hover {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16),
-    0 3px 6px rgba(0, 0, 0, 0.23);
+        0 3px 6px rgba(0, 0, 0, 0.23);
     transform: translate(0px, -8px);
 }
 
-.conteudo img{
+.conteudo img {
     border-radius: 20px;
     width: 122px;
     height: 122px;
@@ -52,7 +53,8 @@ h5 {
     margin: 0 auto;
     display: block;
 }
-.conteudo p{
+
+.conteudo p {
     text-align: center;
     color: #b2bec3;
     padding-top: 0 8px;
@@ -110,7 +112,7 @@ header.active {
 }
 
 main {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
     overflow-y: auto;
     /* Adiciona uma barra de rolagem vertical apenas quando necessário */
     max-height: calc(90vh - 60px);
@@ -251,6 +253,7 @@ main::-webkit-scrollbar-track {
     transition: left 0.3s;
     border-radius: 5px;
 }
+
 .toggle-button:focus {
     outline: none;
     border: none;
@@ -310,11 +313,16 @@ main::-webkit-scrollbar-track {
     padding-bottom: 5px;
     /* Espaçamento entre o texto e a linha */
 }
+
 .categoria-titulo h3 {
-    font-size: 1.5rem; /* Tamanho da fonte do título da categoria */
-    color: #333; /* Cor do texto */
-    border-bottom: 2px solid #ccc; /* Linha separadora abaixo do título */
-    padding-bottom: 5px; /* Espaçamento abaixo da linha */
+    font-size: 1.5rem;
+    /* Tamanho da fonte do título da categoria */
+    color: #333;
+    /* Cor do texto */
+    border-bottom: 2px solid #ccc;
+    /* Linha separadora abaixo do título */
+    padding-bottom: 5px;
+    /* Espaçamento abaixo da linha */
 }
 
 /* Estilo para a classe preco-card no canto inferior direito */
@@ -349,16 +357,20 @@ main::-webkit-scrollbar-track {
     }
 }
 
-@media screen and (max-width: 480px){
+@media screen and (max-width: 480px) {
     main {
         margin: 5px;
         padding: 2px;
     }
-    .content{
+
+    .content {
         margin: 0;
         padding: 0;
-    };
+    }
+
+    ;
 }
+
 /* Estilo para a descrição do produto no modal com quebra de linha automática */
 .modal-body p {
     max-width: 100%;
@@ -499,16 +511,22 @@ main::-webkit-scrollbar-track {
 /* Estilo para a lista com barra de rolagem e limite de altura */
 #listaBairros {
     position: relative;
-    max-height: 100px; /* Defina a altura máxima desejada */
-    overflow-y: auto; /* Adiciona uma barra de rolagem vertical quando necessário */
-    border: 1px solid #ccc; /* Apenas para visualização, pode ser removido */
-    padding: 10px; /* Adicione algum espaço interno para melhorar a aparência */
+    max-height: 100px;
+    /* Defina a altura máxima desejada */
+    overflow-y: auto;
+    /* Adiciona uma barra de rolagem vertical quando necessário */
+    border: 1px solid #ccc;
+    /* Apenas para visualização, pode ser removido */
+    padding: 10px;
+    /* Adicione algum espaço interno para melhorar a aparência */
 }
 
 /* Estilo para os itens da lista */
 #listaBairros li {
-    list-style: none; /* Remove os marcadores de lista padrão */
-    margin: 5px 0; /* Adicione algum espaçamento entre os itens da lista */
+    list-style: none;
+    /* Remove os marcadores de lista padrão */
+    margin: 5px 0;
+    /* Adicione algum espaçamento entre os itens da lista */
 }
 
 
@@ -524,14 +542,24 @@ main::-webkit-scrollbar-track {
 
 /* Classe CSS para animação de movimento para a direita */
 @keyframes slideRight {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 /* Classe CSS para animação de movimento para a esquerda */
 @keyframes slideLeft {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
 /* Aplica a animação de movimento para a direita */
@@ -549,6 +577,7 @@ main::-webkit-scrollbar-track {
     padding: 5px;
     margin: 2%;
 }
+
 .qty {
     width: 25px;
     height: 25px;
@@ -557,15 +586,17 @@ main::-webkit-scrollbar-track {
     color: green;
     font-weight: 900;
 }
+
 /* input.qtyplus { width:25px; height:25px;}
 input.qtyminus { width:25px; height:25px;} */
 
-input.qtyminus, input.qtyplus {
+input.qtyminus,
+input.qtyplus {
     width: 20px;
-    background: inherit; 
+    background: inherit;
     border-radius: 20px;
     padding: 0;
-    border:none;
+    border: none;
     /* border: none; */
     display: inline-block;
     /* vertical-align: middle; */
@@ -577,7 +608,6 @@ input.qtyminus, input.qtyplus {
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
-

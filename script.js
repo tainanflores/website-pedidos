@@ -214,6 +214,7 @@ function createProductCard(produto) {
 
 // Função para adicionar mais produtos de uma categoria
 function addMoreProducts(categoria) {
+    mainSection.scrollTop = 0;
     var contentElement = document.getElementById('loja-container-main');
     contentElement.classList.add('slide-right');
     var btnVoltar = `<div class="text-center mt-2" style="width: 100%;">
