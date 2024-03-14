@@ -10,7 +10,7 @@
     <title>Página de Pedidos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.0">
 </head>
 
 <body>
@@ -18,7 +18,7 @@
         <header class="p-1 float-right">
             <div class="container-fluid">
                 <div class="row justify-content-end">
-                    
+
                     <div class="d-flex col-9 align-items-center" style="padding-left: 60px;">
                         <img src="svg/Spinner-0.6s-41px.svg" class="svg-search-loading">
                         <input type="text" id="filterInput" class="form-control rounded-pill" placeholder="Pesquisar">
@@ -33,7 +33,7 @@
                             <div class="d-flex align-items-center justify-content-end">
                                 <img src="cart.png" alt="Sacola de Compras" class="footer-icon">
                                 <span id="carrinho-badge"
-                                    class="badge badge-pill badge-primary">3</span><!-- Indicador de itens no carrinho -->
+                                    class="badge badge-pill badge-primary">0</span><!-- Indicador de itens no carrinho -->
                             </div>
                         </button>
                     </div>
@@ -42,7 +42,7 @@
             </div>
         </header>
     </div>
-    
+
     <div class="app">
     </div>
     <!-- Footer Fixo -->
@@ -94,10 +94,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <div class="modal-body m-0 pb-0">
-                    <div id="sacolaFeliz">
+                    <!-- <div id="sacolaFeliz">
                         <img id="sacolaVaziaImg" src="sacolafeliz.png" alt="Imagem de uma Sacola feliz"
                             class="img-fluid small" style="opacity: 0.6; max-width: 150px;">
-                    </div>
+                    </div> -->
                     <p class="mb-0 font-weight-bold">O produto foi adicionado a sacola.</p>
                 </div>
                 <div class="modal-footer justify-content-center">
@@ -321,7 +321,7 @@
     <!-- Ou inclua o JavaScript (opcional) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=1.0.2"></script>
 </body>
 
 </html>

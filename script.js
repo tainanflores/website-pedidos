@@ -73,6 +73,7 @@ dadosLoja();
 
 const app = document.querySelector('.app');
 let mainSection;
+let sidebarScroll;
 let loja;
 let produtos;
 let bairrosEntrega;
@@ -114,7 +115,7 @@ function createPage(produtos, categorias) {
                 <nav id="sidebar" class="col-md-3 col-lg-3 d-md-block bg-light sidebar mb-3">
                     <div class="position-sticky">
                         <div class="sidebar-header text-center py-1">
-                            <img src="/fotos/${lojaID}/logo/logo.png" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
+                            <img src="/fotos/${lojaID}/logo/logo.png" onerror="this.src='placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
                                 style="max-width: 140px;">
                         </div>
                         <div class="sidebar-scroll">
@@ -150,6 +151,7 @@ function createPage(produtos, categorias) {
         </button>
     `;
     mainSection = document.querySelector('main');
+    sidebarScroll = document.querySelector('.sidebar-scroll');
 
     // Adiciona produtos iniciais com botão "Ver Mais"
     addInitialProducts(produtos, categorias);
@@ -193,14 +195,14 @@ function createProductCard(produto) {
             <div class="card shadow-sm" style="height:100px;">
                 <div class="row no-gutters">
                     <div class="col-4 p-2 " style="height: 100px;">
-                        <img src="/fotos/${lojaID}/${produto.ID_PROD}/${produto.ID_PROD}_thumb.jpg" onerror="this.src='placeholder_thumb.jpg'" class="card-img rounded" alt="COD-${produto.ID_PROD}">
+                        <img src="/fotos/${lojaID}/${produto.ID_PROD}/${produto.ID_PROD}_thumb.jpg" loading="lazy" onerror="this.src='placeholder_thumb.jpg'" class="card-img rounded" alt="COD-${produto.ID_PROD}">
                     </div>
                     <div class="col-8 card-body p-0 m-0" bis_skin_checked="1">
                         <div class="row p-0 pr-2 m-0" bis_skin_checked="1" style="height:55px;">
                             <h5 class="card-title small texto-cortado text-right m-0 p-1 pt-2" style="width:100%;">${nomeFormatado.trim()}</h5>
                         </div>
                         <div class="row d-flex align-items-baseline m-1 justify-content-end mt-2" bis_skin_checked="1">
-                            <p class="card-text m-0 p-1 preco-card small" style="color: black; float:right;;"><strong>R$ 4.00</strong></p>
+                            <p class="card-text m-0 p-1 preco-card small" style="color: black; float:right;;"><strong>R$ </strong><strong>${produto.VR_VENDA3_PRO.toFixed(2)}</strong></p>
                             <button type="button" class="btn btn-primary btn-sm p-1 btn-comprar" data-toggle="modal" data-target="#productModal" style="border-radius:10px;">
                                 Comprar
                             </button>                            
@@ -215,6 +217,7 @@ function createProductCard(produto) {
 // Função para adicionar mais produtos de uma categoria
 function addMoreProducts(categoria) {
     mainSection.scrollTop = 0;
+    sidebarScroll.scrollTop = 0;
     var contentElement = document.getElementById('loja-container-main');
     contentElement.classList.add('slide-right');
     var btnVoltar = `<div class="text-center mt-2" style="width: 100%;">
@@ -241,6 +244,8 @@ function addMoreProducts(categoria) {
 
 // Função para voltar à exibição inicial de produtos
 function backToInitialView() {
+    mainSection.scrollTop = 0;
+    sidebarScroll.scrollTop = 0;
     var contentElement = document.getElementById('loja-container-main');
     contentElement.classList.remove('slide-left');
 
@@ -328,7 +333,7 @@ $(document).on('click', '.categoria-btn', function () {
 });
 
 // Evento de clique no botão "Comprar"
-$(document).on('click', '.btn-comprar', function () {
+$(document).on('click', '.product-card', function () {
     // Aqui você pode abrir a popup e preenchê-la com os dados do produto
     const productId = $(this).closest('.product-card').data('product-id');
     console.log("esse é o id do produto clicado para comprar:", productId);
@@ -1023,6 +1028,7 @@ $('#formaPagamento').on('change', function () {
     } else {
         // Se outra forma de pagamento for selecionada, esconder o campo "Troco para quanto?"
         $('#trocoDiv').hide();
+        $('#troco').val('');
     }
 });
 

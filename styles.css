@@ -355,6 +355,10 @@ main::-webkit-scrollbar-track {
     main {
         margin-left: 250px;
     }
+
+    #productModal .modal-dialog {
+        max-width: 300px;
+    }
 }
 
 @media screen and (max-width: 480px) {
