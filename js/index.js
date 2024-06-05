@@ -1,60 +1,39 @@
-// Obtenha a URL atual do navegador.
 const url = window.location.href;
 
-// Use o objeto URL para analisar a URL e obter o valor do parâmetro "id".
 const urlObj = new URL(url);
-var lojaID = urlObj.searchParams.get("id");
+var lojaCpfCnpj = urlObj.searchParams.get("id");
+let lojaID;
 var telefoneCliente = urlObj.searchParams.get("tel");
 
-// Se houver parâmetros na URL, atualize e salve as informações
-if (lojaID) {
-    // Atualize as informações do usuário com base nos parâmetros
-    var id = lojaID;
+if (lojaCpfCnpj) {
+    var cpf_cnpj = lojaCpfCnpj;
     var tel = telefoneCliente;
 
-    // Salve as informações para uso posterior (localStorage ou sessionStorage)
-    localStorage.setItem('idUsuario', id);
+    localStorage.setItem('idUsuario', cpf_cnpj);
     localStorage.setItem('telUsuario', tel);
 } else {
-    // Se não houver parâmetros, carregue as informações salvas anteriormente
-    lojaID = localStorage.getItem('idUsuario');
-    telefoneCliente = localStorage.getItem('telUsuario');
 
-    // Use as informações salvas para carregar o conteúdo do site
-    // Faça algo com as informações (por exemplo, chame a API)
+    if (localStorage.getItem('idUsuario')) {
+        lojaCpfCnpj = localStorage.getItem('idUsuario');
+        telefoneCliente = localStorage.getItem('telUsuario');
+    } else {
+        //window.location.href = 'http://pedidozap.app/cadastro.html';
+    }
 }
-
-
-if (lojaID) {
-    // Use o valor de "id" como necessário.
-    // console.log("Valor de 'id' na URL:", lojaID);
-} else {
-    // console.log("Parâmetro 'id' não encontrado na URL.");
-}
-
-//WEB_DDNS_CLI, WEB_PORTA_CLI, WEB_BANCOCLI
 
 document.getElementById("loadingPopup").style.display = "flex";
 
-// Função para fazer a solicitação AJAX para obter os dados da API
 function dadosLoja() {
     $.ajax({
-        url: `https://mundodigital.ddns.net:5000/api/Cliente/${lojaID}?Coluna=cnpj`, // Substitua pelo URL correto da sua API
+        url: `https://mundodigital.ddns.net:5000/api/Cliente/${lojaCpfCnpj}?Coluna=cnpj`, // Substitua pelo URL correto da sua API
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            // console.log(data.bloqueadO_CLI);
-            // console.log(data.weB_DDNS_CLI);
-            // console.log(data.weB_PORTA_CLI);
-            // Verificar o valor de bloqueadO_CLI
             if (data.bloqueadO_CLI === false) {
                 loja_ddns = `${data.weB_DDNS_CLI}:${data.weB_PORTA_CLI}`;
-                // console.log(loja_ddns);
-                //loja_ddns = 'localhost:3001'; //para testar local
-                // Chamar a função carregarProdutos se bloqueadO_CLI for false
+                //loja_ddns = 'mundodigital.ddns.net:3001'
+                lojaID = data.iD_CLI;
                 carregarProdutos(loja_ddns);
-                // Mostrar o popup de carregamento
-                //document.getElementById("loadingPopup").style.display = "none";
             } else {
                 console.log("error")
             }
@@ -65,10 +44,8 @@ function dadosLoja() {
     });
 }
 
-// Mostrar o popup de carregamento
 
 
-// Chame a função para carregar os dados quando a página for carregada
 dadosLoja();
 
 const app = document.querySelector('.app');
@@ -77,29 +54,23 @@ let sidebarScroll;
 let loja;
 let produtos;
 let bairrosEntrega;
-//let product;
 let categorias;
 
 function carregarProdutos(loja_ddns) {
     $.ajax({
-        url: `https://${loja_ddns}/api/pedido?id=${lojaID}`, // Substitua pelo URL correto da sua API
+        url: `https://${loja_ddns}/api/pedido?id=${lojaID}`,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
             console.log(data.loja);
             loja = data.loja[0];
-            console.l
             produtos = data.produtos;
             categorias = data.categorias;
             bairrosEntrega = data.bairros;
             console.log(url);
 
-            // Chamada da função para criar a página com os produtos
             createPage(produtos, categorias);
-            //addProdutos(produtos, categorias);
             document.getElementById("loadingPopup").style.display = "none";
-
-            // getColor();
         },
         error: function (error) {
             console.error('Erro na solicitação AJAX:', error);
@@ -108,6 +79,8 @@ function carregarProdutos(loja_ddns) {
 }
 
 function createPage(produtos, categorias) {
+    categorias.sort((a, b) => a.GRUP_DESCRICAO.localeCompare(b.GRUP_DESCRICAO));
+    let pedidoMin = loja.VR_PEDIDO_MIN || 0;
     app.innerHTML = `
         <div class="container-fluid">
             <div class="row">
@@ -115,9 +88,11 @@ function createPage(produtos, categorias) {
                 <nav id="sidebar" class="col-md-3 col-lg-3 d-md-block bg-light sidebar mb-3">
                     <div class="position-sticky">
                         <div class="sidebar-header text-center py-1">
-                            <img src="/fotos/${lojaID}/logo/logo.png" onerror="this.src='placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
+                            <img src="/fotos/${lojaCpfCnpj}/logo/logo.png" onerror="this.src='assets/png/placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
                                 style="max-width: 140px;">
+                            <p class="small pt-2" style="color:black;"><strong>Pedido Mínimo:</strong> R$ ${parseFloat(pedidoMin, 10).toFixed(2)}</p>    
                         </div>
+                        
                         <div class="sidebar-scroll">
                             <ul class="nav flex-column">
                                 <li class="nav-item"><button type="button" class="btn btn-outline-dark btn-sm categoria-btn ver-todos" style="width: 98%; font-weight: 500;">Ver Todos</button></li>
@@ -153,6 +128,10 @@ function createPage(produtos, categorias) {
     mainSection = document.querySelector('main');
     sidebarScroll = document.querySelector('.sidebar-scroll');
 
+    if (!loja.OPERANDO_EMP) {
+        $("#avisoFechado").show();
+
+    }
     // Adiciona produtos iniciais com botão "Ver Mais"
     addInitialProducts(produtos, categorias);
 }
@@ -167,11 +146,14 @@ function addInitialProducts(produtos, categorias) {
         if (produtosCategoria.length > 0) {
             return `
                         <div id="${nomeFormatado.trim()}" class="row categoria-titulo container-fluid">
-                            <h3 style="width: 100%;" id="categoria-${categoria.ID_GRUPO}">${nomeFormatado.trim()}</h3>
+                            <h3 id="categoria-${categoria.ID_GRUPO}">${nomeFormatado.trim()}</h3>
+                            <div class="ver-mais-top text-center d-flex" >
+                            <button class="btn btn-link btn-sm ver-mais" data-categoria="${categoria.GRUP_DESCRICAO}" style="float:left; border:none; font-weight:500; color:red">Ver todos</button>
+                        </div>
                         </div>
                         ${produtosCategoria.map(createProductCard).join('')}
-                        <div class="text-center" style="width: 100%">
-                            <button class="btn btn-warning btn-sm ver-mais" data-categoria="${categoria.GRUP_DESCRICAO}" style="float:left; border-radius:15px;">Ver Mais</button>
+                        <div class="text-center ver-mais-bottom" style="width: 100%; ">
+                            <button class="btn btn-link btn-sm ver-mais" data-categoria="${categoria.GRUP_DESCRICAO}" style="float:left; border:none; font-weight:500; color:red;">Ver todos</button>
                         </div>
                     `;
         }
@@ -188,6 +170,8 @@ function addInitialProducts(produtos, categorias) {
 }
 
 function createProductCard(produto) {
+    let imgOnError = "/assets/jpg/placeholder_thumb.jpg";
+
     var nomeFormatado = primeiraLetraMaiuscula(produto.NOME_PROD)
     return `
         <div class="product-card col-sm-6 col-md-6 col-lg-4 col-xl-3 p-1" id="product-${produto.ID_PROD}" data-product-id="${produto.ID_PROD}">
@@ -195,15 +179,15 @@ function createProductCard(produto) {
             <div class="card shadow-sm" style="height:100px;">
                 <div class="row no-gutters">
                     <div class="col-4 p-2 " style="height: 100px;">
-                        <img src="/fotos/${lojaID}/${produto.ID_PROD}/${produto.ID_PROD}_thumb.jpg" loading="lazy" onerror="this.src='placeholder_thumb.jpg'" class="card-img rounded" alt="COD-${produto.ID_PROD}">
+                        <img src="/fotos/${lojaCpfCnpj}/${produto.ID_PROD}/${produto.ID_PROD}_thumb.jpg" loading="lazy" onerror="this.src='${imgOnError}'" class="card-img rounded" alt="COD-${produto.ID_PROD}">
                     </div>
                     <div class="col-8 card-body p-0 m-0" bis_skin_checked="1">
                         <div class="row p-0 pr-2 m-0" bis_skin_checked="1" style="height:55px;">
                             <h5 class="card-title small texto-cortado text-right m-0 p-1 pt-2" style="width:100%;">${nomeFormatado.trim()}</h5>
                         </div>
-                        <div class="row d-flex align-items-baseline m-1 justify-content-end mt-2" bis_skin_checked="1">
-                            <p class="card-text m-0 p-1 preco-card small" style="color: black; float:right;;"><strong>R$ </strong><strong>${produto.VR_VENDA3_PRO.toFixed(2)}</strong></p>
-                            <button type="button" class="btn btn-primary btn-sm p-1 btn-comprar" data-toggle="modal" data-target="#productModal" style="border-radius:10px;">
+                        <div class="row d-flex align-items-end m-1 justify-content-around mt-2" bis_skin_checked="1">
+                            <p class="card-text m-0 p-0 pt-2 preco-card small" style="color: black; float:right;"><strong>R$ </strong><strong>${produto.VR_VENDA3_ESTOQUE.toFixed(2)}</strong></p>
+                            <button type="button" class="btn btn-primary btn-sm p-1 btn-comprar" style="border-radius:5px;">
                                 Comprar
                             </button>                            
                         </div>
@@ -221,7 +205,7 @@ function addMoreProducts(categoria) {
     var contentElement = document.getElementById('loja-container-main');
     contentElement.classList.add('slide-right');
     var btnVoltar = `<div class="text-center mt-2" style="width: 100%;">
-                        <button class="btn btn-outline-danger btn-sm voltar-todos" style="float:left; border-radius:15px; font-weight:500;">◁ Voltar</button>
+                        <button class="btn btn-link btn-sm voltar-todos" style="float:left;border:none; font-weight:500; color:red;">◁ Voltar</button>
                     </div> `
     var categoriaElement = `<div id="${categoria}" class="row categoria-titulo container-fluid" style="margin-top:5px;">
                                 <h3 style="width: 100%;"}">${primeiraLetraMaiuscula(categoria)}</h3>
@@ -343,35 +327,72 @@ $(document).on('click', '.product-card', function () {
 });
 
 function openProductPopup(product) {
-    // Seletor para a div da popup
+    let imgOnError = "/assets/jpg/placeholder_thumb.jpg";
+
     const popupSelector = '#productModal';
+    let qtdCarrinho = 0;
+    if (carrinho) {
+        const existingProductIndex = carrinho.findIndex(item => item.id === product.ID_PROD);
+        if (existingProductIndex != -1) {
+            qtdCarrinho = carrinho[existingProductIndex].quantidade;
+        }
+    }
 
     // Preencha a popup com os dados do produto
     $(popupSelector).find('.modal-title').text(product.NOME_PROD);
-    $(popupSelector).find('.modal-body').html(`
-        <p class="small m-0 p-0 text-right"><i>*Imagem meramente ilustrativa</i></p>
-        <img src="/fotos/${lojaID}/${product.ID_PROD}/${product.ID_PROD}_original.jpg" alt="${product.NOME_PROD}" class="img-fluid" onerror="this.src='placeholder.jpg'">
-        <p class="small"><i>Descrição: </i></p>
-        <p id="productPrice" style="color:green; font-weigth:strong;">R$ ${product.VR_VENDA3_PRO.toFixed(2)}</p>
-        <label for="quantidade">Quantidade:</label>
-        <!--<input class="qty" type="number" id="quantidadeProduto" name="quantidade" value="1" min="1" style="width:50px;" data-product-id="${product.ID_PROD}">-->
-        <span class="quantity">
-            <input type="button" value="━" data-index="0" class="btn-outline-danger qtyminus minus p-0 m-0" field="quantity" style="width: 25px">
-            <input type="number" id="quantidadeProduto" name="quantidade" value="1" min="1" data-index="0" class="qty p-0 m-0" data-product-id="${product.ID_PROD}">
-            <input type="button" value="✚" data-index="0" class="btn-outline-primary qtyplus plus p-0 m-0" field="quantity" style="width: 25px">
-        </span>
-    `);
 
-    // Adicione um evento ao botão "Adicionar ao Carrinho" na popup, se necessário
-    $(popupSelector).find('#addToCartButton').off('click').on('click', function () {
-        // Feche a popup
-        $(popupSelector).modal('hide');
+    // Clear the carousel inner content
+    $('#carouselInner').empty();
+
+    // Adicione as imagens ao carousel
+    let images = [
+        `${product.ID_PROD}_original.jpg`,
+        `${product.ID_PROD}_1.jpg`,
+        `${product.ID_PROD}_2.jpg`,
+        `${product.ID_PROD}_3.jpg`
+        // Adicione mais imagens conforme necessário
+    ];
+
+    images.forEach((image, index) => {
+        let activeClass = index === 0 ? 'active' : '';
+        let imgElement = `
+            <div class="carousel-item ${activeClass}">
+                <img src="/fotos/${lojaCpfCnpj}/${product.ID_PROD}/${image}" alt="${product.NOME_PROD}" class="d-block w-100" onerror="handleImageError(this, ${index})">
+            </div>
+        `;
+        $('#carouselInner').append(imgElement);
     });
 
+    $(popupSelector).find('.modal-body').html(`
+        <p class="m-0 p-0 text-right" style="font-size:xx-small"><i>*Imagens meramente ilustrativas</i></p>        
+        <p style="font-size:x-small"><i><strong>Descrição:</strong> asdjo asd,asod ad,sdla,dslaçs pĺapś pópóaspódaçlçfkapújgla piplfkasjfas'plasdçlklapsdaslkfçlasjkfaplçm plkfgdplkalsljkf lkdçlfdsĺfflpsik  çkslkdaçljtpáj ápjfçakopaialjdflkaçĺ fapklsakfpçkfçaikstye</i></p>
+        <p id="productPrice" style="color:green; font-weigth:strong;">R$ ${product.VR_VENDA3_ESTOQUE.toFixed(2)}</p>
+        <div class="row pl-3">
+            <label for="quantidade">Quantidade:</label>        
+            <form class="quantity ml-2">
+                <input type="button" value="━" data-index="0" class="btn-outline-danger qtyminus minus p-0 m-0" field="quantity" style="width: 25px">
+                <input type="number" id="quantidadeProduto" name="quantidade" value="1" min="1" max="${product.QTD_ATUAL_ESTOQUE - qtdCarrinho}" data-index="0" class="qty p-0 m-0" data-product-id="${product.ID_PROD}">
+                <input type="button" value="✚" data-index="0" class="btn-outline-primary qtyplus plus p-0 m-0" field="quantity" style="width: 25px">
+            </form>
+        </div>
+        <p class="m-0" style="font-size:0.8rem;">Estoque: ${product.QTD_ATUAL_ESTOQUE - qtdCarrinho}</p>
+        <p class="m-0" id="qtdCarrinho" style="font-size:0.7rem; font-weight:bold; display:none">Adicionado na Sacola: ${qtdCarrinho}</p>
+        
+    `);
+    if (qtdCarrinho > 0) {
+        $('#qtdCarrinho').show();
+    }
     // Abra a popup
     $(popupSelector).modal('show');
 }
-
+// Função para tratar erro de imagem
+function handleImageError(img, index) {
+    if (index === 0) {
+        img.src = "/assets/jpg/placeholder_thumb.jpg";
+    } else {
+        img.closest('.carousel-item').remove();
+    }
+}
 
 let grid = document.querySelector(".app");
 let filterInput = document.getElementById("filterInput");
@@ -418,45 +439,13 @@ function groupByCategory(produtos, categorias) {
     return grouped;
 }
 
-// Adicione um evento de clique aos itens de categoria na barra lateral
-// document.querySelectorAll('.categoria-item').forEach(item => {
-//     item.addEventListener('click', function (e) {
-//         e.preventDefault(); // Impede o comportamento padrão do link
-//         const target = this.getAttribute('data-target'); // Obtém o alvo da categoria
-//         const categoria = document.querySelector(`[data-categoria="${target}"]`); // Encontra a seção correspondente no conteúdo principal
-//         if (categoria) {
-//             categoria.scrollIntoView({ behavior: 'smooth' }); // Rola até a seção com efeito suave
-//         }
-//     });
-// });
-
-// Adicione um evento de clique aos itens de categoria na barra lateral
-// document.querySelectorAll('.categoria-item').forEach(item => {
-//     item.addEventListener('click', function (e) {
-//         e.preventDefault(); // Impede o comportamento padrão do link
-//         const target = this.getAttribute('data-target'); // Obtém o alvo da categoria
-//         const categoria = document.querySelector(`[data-categoria="${target}"]`); // Encontra a seção correspondente no conteúdo principal
-//         const conteudoPrincipal = document.querySelector('.conteudo-principal'); // Obtém o contêiner do conteúdo principal
-
-//         if (categoria && conteudoPrincipal) {
-//             // Calcula a posição horizontal da categoria em relação ao contêiner do conteúdo principal
-//             const categoriaOffsetLeft = categoria.offsetLeft;
-
-//             // Define a posição horizontal do contêiner do conteúdo principal para a posição da categoria
-//             conteudoPrincipal.scrollLeft = categoriaOffsetLeft;
-//         }
-//     });
-// });
-
-
-
 function getProductById(produtos, productId) {
     product = produtos.find(produto => produto.ID_PROD === productId);
     if (product) {
         return product;
     } else {
         console.error(`Produto com ID ${productId} não encontrado.`);
-        return null; // Ou faça algo apropriado em caso de produto não encontrado
+        return null;
     }
 }
 
@@ -495,7 +484,10 @@ function atualizarIndicadorCarrinho() {
 // Atualizar o preço total do produto quando a quantidade muda
 $(document).on('change', '#quantidadeProduto', function () {
     const novaQuantidade = parseInt($(this).val(), 10);
-    if (novaQuantidade > 0) {
+    const qtdEstoque = parseInt($('#quantidadeProduto').attr('max'), 10);
+    if (novaQuantidade > qtdEstoque) {
+        $(this).val(qtdEstoque)
+    } else if (novaQuantidade > 0) {
         return
     } else {
         $(this).val(1);
@@ -504,19 +496,23 @@ $(document).on('change', '#quantidadeProduto', function () {
 
 
 // Evento de clique no botão "Adicionar à Sacola"
-$(document).on('click', '.btn-add-to-cart', function () {
+$(document).on('click', '#addToCartButton', function () {
     // Obter detalhes do produto a partir do modal
+
     const productId = $('.qty').data('product-id');
     console.log(productId);
     const productName = $('#productModal').find('.modal-title').text();
     const productImage = $('#productModal').find('.modal-body img').attr('src');
     const productPrice = parseFloat($('#productPrice').text().replace('R$ ', '').replace(',', '.'));
     const productQuantity = parseInt($('#quantidadeProduto').val(), 10);
+    const productEstoque = parseInt($('#quantidadeProduto').attr('max'), 10);
 
+    if (productQuantity > productEstoque) {
+        alert('A quantidade não pode ser maior que o estoque atual')
+        return;
+    }
     // Verificar se o produto já está no carrinho
     const existingProductIndex = carrinho.findIndex(item => item.id === productId);
-    console.log("esse é o valor de existingPdtIndex:", existingProductIndex);
-
     // Criar um objeto representando o produto
     if (existingProductIndex !== -1) {
         // O produto já está no carrinho, atualize a quantidade
@@ -527,7 +523,8 @@ $(document).on('click', '.btn-add-to-cart', function () {
             nome: productName,
             imagem: productImage,
             preco: productPrice,
-            quantidade: productQuantity
+            quantidade: productQuantity,
+            estoque: productEstoque
         };
         console.log(produto);
         // Adicionar o produto ao carrinho
@@ -540,7 +537,10 @@ $(document).on('click', '.btn-add-to-cart', function () {
     // Atualizar a exibição da sacola na página
     atualizarExibicaoCarrinho();
     // Após adicionar o produto ao carrinho com sucesso
+    $('#productModal').modal('hide');
+
     $('#confirmacaoModal').modal('show');
+
 
     $('#sacolaButton').on('click', function () {
         $("input[name='opcaoEntrega']").prop("checked", false);
@@ -588,7 +588,7 @@ function atualizarExibicaoCarrinho() {
     $(carrinhoSelector).empty();
 
     let total = 0;
-    let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', ''));
+    let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
 
     // Iterar sobre os produtos no carrinho e atualizar a exibição
     carrinho.forEach((product, index) => {
@@ -602,7 +602,7 @@ function atualizarExibicaoCarrinho() {
                 <div class="card-body p-1">
                     <div class="row">
                         <div class="col-0 col-sm-2 col-md-2 d-none d-sm-block">
-                            <img src=${product.imagem} onerror="this.src='placehold_thumb.jpg'" alt="${product.ID_PROD}" class="img-thumbnail" style="max-width: 50px; max-height: 50px;">
+                            <img src=${product.imagem} onerror="this.src='assets/jpg/placeholder_thumb.jpg'" alt="${product.ID_PROD}" class="img-thumbnail" style="max-width: 50px; max-height: 50px;">
                         </div>
                         <div class="col-5 col-sm-4 col-md-4 small texto-cortado align-self-center">
                         ${product.quantidade}x ${product.nome}
@@ -652,6 +652,12 @@ atualizarExibicaoCarrinho();
 $(document).on('change', '.quantidade-produto', function () {
     const index = $(this).data('index');
     const novaQuantidade = parseInt($(this).val(), 10);
+    const estoqueAtual = carrinho[index].estoque;
+    if (novaQuantidade > estoqueAtual) {
+        alert(`A quantidade não pode ser maior que o estoque atual: ${estoqueAtual}`);
+        $(this).val(estoqueAtual);
+        return;
+    }
     if (novaQuantidade > 0) {
         carrinho[index].quantidade = novaQuantidade;
         sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
@@ -718,10 +724,15 @@ atualizarExibicaoCarrinho();
 
 // Evento de clique no botão "Finalizar Pedido"
 $(document).on('click', '#finalizarCompra', function () {
+    if (!loja.OPERANDO_EMP) {
+        $('#finalizarPedidoModal').modal('hide');
+        alert('No momento não estamos aceitando pedidos pelo site.')
+        return;
+    }
     // Abra a nova popup de finalização de pedido e formulário de cadastro
     $('#finalizarPedidoModal').modal('show');
     $('#telefone').val(formatTelefone(telefoneCliente));
-    checkClienteByTelefone($('#telefone').val())
+    checkClienteByTelefone($('#telefone').val(), lojaID)
 });
 
 
@@ -740,21 +751,21 @@ $('#telefone').on('input', function () {
     // Verificar se o telefone tem 11 dígitos
     if (telefone.length === 11) {
         // Faça a solicitação AJAX após a formatação
-        checkClienteByTelefone($(this).val());
+        checkClienteByTelefone($(this).val(), lojaID);
     }
 });
 
 // Variável para armazenar o ID do rádio selecionado
 var idRadioSelecionado = null;
 // Função para verificar o cliente com base no número de telefone
-function checkClienteByTelefone(telefone) {
+function checkClienteByTelefone(telefone, id) {
 
     // Mostrar o popup de carregamento
     document.getElementById("loadingPopup").style.display = "flex";
 
     $.ajax({
         url: `https://${loja_ddns}/api/consultarcliente`,
-        data: { telefone: telefone },
+        data: { telefone: telefone, id: id },
         method: 'GET',
         success: function (data) {
             cliente = data.cliente;
@@ -780,17 +791,21 @@ function checkClienteByTelefone(telefone) {
                                             <input type="text" class="form-control" id="complemento">
                                         </div>
                                         <div class="form-group">
-                                            <label for="bairro">Bairro</label>
-                                            <div class="dropdown">
-                                                <ul id="listaBairros" class="dropdown-menu" style="display: none;"></ul>
-                                                <input type="text" class="form-control" id="bairroPesquisa"
-                                                    placeholder="Pesquisar bairro">
-                                            </div>
+                                            <label for="cidade">Cidade</label>
+                                            <select class="form-control" id="dropdownCidades">
+                                                <!-- Options serão adicionados dinamicamente aqui -->
+                                            </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="cidade">Cidade</label>
-                                            <input type="text" class="form-control" id="cidade" value="Divinópolis" readonly>
+                                            <label for="cidade">Bairro</label>
+                                            <select class="form-control" id="dropdownBairros">
+                                                <!-- Options serão adicionados dinamicamente aqui -->
+                                            </select>
                                         </div>
+                                        <!--<div class="form-group">
+                                            <label for="cidade">Cidade</label>
+                                            <input type="text" class="form-control" id="cidade" value="${loja.NOME_CID}" readonly>
+                                        </div>-->
                                     </div>`)
 
             if (cliente.length > 0) {
@@ -804,22 +819,25 @@ function checkClienteByTelefone(telefone) {
                     return `${endereco.RUA_CLI_END}, ${endereco.NUMERO_CLI_END}<br>${endereco.NOME_BAIRRO.trim()} - ${endereco.NOME_CID}`;
                 }
 
-                // Iterar sobre os endereços e criar opções de rádio
                 enderecos.forEach(function (endereco, index) {
                     var enderecoFormatado = formatarEndereco(endereco);
                     var radioId = `enderecoRadio${index}`;
-                    var taxaBairro = endereco.VR_FRETE_BAIRRO;
+                    var taxaBairro = endereco.VR_FRETE_BAIRROQ;
 
                     // Criar card de endereço
                     var labelCard = $(`
-                    <label class="form-check-label m-1" for="${radioId}">
-                        <div class="card">
-                            <div class="card-body p-2 small">
-                                <h6 class="card-title">Endereço ${index + 1}</h6>
-                                <p class="card-text enderecoFormatado">${enderecoFormatado}</p>
+                        <label class="form-check-label m-1" for="${radioId}">
+                            <div class="card">
+                                <div class="card-body p-2 small">
+                                    <h6 class="card-title">Endereço ${index + 1}</h6>
+                                    <p class="card-text enderecoFormatado">${enderecoFormatado}</p>
+                                    <div class="flex-box">
+                                        <a href="#" class="btn-excluir-endereco p-0" style="display:none; float:left; color:black">Excluir</a>
+                                        <a href="#" class="btn-editar-endereco p-0" style="display:none; float:right;">Editar</a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </label>
+                        </label>
                     `);
 
                     // Criar opção de rádio
@@ -830,6 +848,8 @@ function checkClienteByTelefone(telefone) {
                     // Adicionar opção de rádio e card à lista
                     $("#listaEnderecos").append(radioOption);
                 });
+
+
 
                 $("#listaEnderecos").append($(enderecoNovo));
 
@@ -853,59 +873,93 @@ function checkClienteByTelefone(telefone) {
     });
 }
 
-function popularBairros(bairros) {
-    var listaBairros = $("#listaBairros");
-    var inputBairro = $("#bairroPesquisa");
-
-    // Adicionar bairros à lista
+function cidadesSemRepetir(bairros) {
+    var cidades = {};
     bairros.forEach(function (bairro) {
-        if (bairro.CK_ENTREGA_BAIRRO == 1) {
-            var li = $("<li>").text(bairro.NOME_BAIRRO.trim());
-
-            li.on("click", function () {
-                inputBairro.val(bairro.NOME_BAIRRO.trim());
-                inputBairro.attr("data-id-bairro", bairro.ID_BAIRRO);
-                inputBairro.attr("data-taxa-entrega", bairro.VR_FRETE_BAIRRO);
-                listaBairros.hide();
-                $('#taxaEntrega').show();
-                if (bairro.VR_FRETE_BAIRRO != 0) {
-                    $('#taxa-entrega').text(`R$ ${bairro.VR_FRETE_BAIRRO.toFixed(2)}`);
-                    atualizarExibicaoCarrinho();
-                } else {
-                    $('#taxa-entrega').text(`Grátis`);
-                }
-            });
-
-            listaBairros.append(li);
+        if (!cidades[bairro.ID_CIDADE_BAIRRO]) {
+            cidades[bairro.ID_CIDADE_BAIRRO] = bairro.NOME_CID;
         }
+    })
+
+    var listaCidades = [];
+    for (var idCidade in cidades) {
+        listaCidades.push({ ID_CIDADE: idCidade, NOME_CIDADE: cidades[idCidade] });
+    }
+
+    return listaCidades;
+}
+
+function removerAcentos(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function popularBairros(bairros, id) {
+    var dropdownBairros = $("#dropdownBairros");
+    dropdownBairros.empty();
+    dropdownBairros.append('<option value="">Selecione um bairro</option>');
+    var idCidade = parseInt(id);
+
+    var bairrosDaCidade = bairros.filter(function (bairro) {
+        return bairro.ID_CIDADE_BAIRRO === idCidade;
+    })
+
+    // Adicionar opções ao dropdown
+    bairrosDaCidade.forEach(function (bairro) {
+        dropdownBairros.append('<option value="' + bairro.ID_BAIRRO + '">' + bairro.NOME_BAIRRO.trim() + '</option>');
     });
 
-    // Adicionar funcionalidade de pesquisa
-    inputBairro.on('input', function () {
-        $('#taxa-entrega').text('0.00')
-        $('#taxaEntrega').hide();
-        atualizarExibicaoCarrinho();
-        var searchTerm = $(this).val().toLowerCase();
+    // Ao selecionar um bairro no dropdown
+    dropdownBairros.on("change", function () {
+        $("#dropdownBairros").removeClass("is-invalid");
 
-        listaBairros.find("li").each(function () {
-            var bairroText = $(this).text().toLowerCase();
-            $(this).toggle(bairroText.indexOf(searchTerm) > -1);
+        var selectedBairroId = $(this).val();
+
+        $('#taxaEntrega').show();
+
+        // Encontrar o bairro selecionado nos dados originais para obter informações adicionais, se necessário
+        var selectedBairro = bairros.find(function (bairro) {
+            return bairro.ID_BAIRRO === parseInt(selectedBairroId);
         });
 
-        listaBairros.toggle(!!searchTerm); // Mostrar/ocultar a lista de bairros conforme necessário
+        if (selectedBairro && selectedBairro.VR_FRETE_BAIRROQ !== 0) {
+            $('#taxa-entrega').text('R$ ' + selectedBairro.VR_FRETE_BAIRROQ.toFixed(2));
+            atualizarExibicaoCarrinho();
+        } else {
+            $('#taxa-entrega').text('Grátis');
+        }
+    });
+}
+
+function popularCidades(bairros) {
+    var dropdownCidades = $("#dropdownCidades");
+    var listaBairros = $("#listaBairros");
+
+    var cidades = cidadesSemRepetir(bairros);
+
+    // Limpar dropdown e adicionar uma opção para selecionar
+    dropdownCidades.empty();
+    dropdownCidades.append('<option value="">Selecione uma cidade</option>');
+
+
+    // Adicionar as cidades ao dropdown
+    cidades.forEach(function (cidade) {
+        dropdownCidades.append('<option value="' + cidade.ID_CIDADE + '">' + cidade.NOME_CIDADE.trim() + '</option>');
     });
 
-    // Mostrar a lista ao clicar no campo de pesquisa
-    inputBairro.on("click", function () {
-        $('#taxa-entrega').text('0.00');
-        $('#taxaEntrega').hide();
-        atualizarExibicaoCarrinho();
-        listaBairros.show();
+    // Adicionar funcionalidade de pesquisa ao clicar no dropdown
+    dropdownCidades.on('click', function () {
+        $(this).find("option").show();
+    });
+    // Ao selecionar uma cidade
+    dropdownCidades.on("change", function () {
+        var idCidade = $(this).val();
+        listaBairros.hide();
+        popularBairros(bairros, idCidade);
+        $("#dropdownCidades").removeClass("is-invalid");
     });
 }
 
 
-// Formatação de Telefone
 function formatTelefone(telefone) {
 
     let numeroTelefone;
@@ -938,10 +992,38 @@ function formatTelefone(telefone) {
 }
 
 $(document).on('click', '#continuarEndereco', function () {
-    popularBairros(bairrosEntrega);
+    const telefone = $('#telefone').val();
+    const nome = $('#nome').val();
+
+    // Validação de telefone
+    if (telefone.length !== 15) {
+        alert("Telefone inválido. Deve conter 11 dígitos.");
+        $("#telefone").addClass("is-invalid");
+        return;
+    } else {
+        $("#telefone").removeClass("is-invalid");
+    }
+
+    // Validação de nome
+    if ($.trim(nome) === "") {
+        alert("Nome é obrigatório.");
+        $("#nome").addClass("is-invalid");
+        return;
+    } else {
+        $("#nome").removeClass("is-invalid");
+    }
+    if ($.trim(nome).length < 3) {
+        alert("Nome deve ter mais que 2 caracteres.");
+        $("#nome").addClass("is-invalid");
+        return;
+    } else {
+        $("#nome").removeClass("is-invalid");
+    }
+
+    popularCidades(bairrosEntrega);
     // Abra a nova popup de finalização de pedido e formulário de cadastro
     if (!cliente) {
-        checkClienteByTelefone($('#telefone').val());
+        checkClienteByTelefone($('#telefone').val(), lojaID);
     }
     $('#finalizarPedidoModal').modal('hide');
     $('#enderecoPedidoModal').modal('show');
@@ -1052,31 +1134,13 @@ $('#continuarPagamento').click(function () {
     const clienteID = cliente.length === 0 ? null : cliente[0].ID_CLI;
     const escolhaEntrega = $('input[name=opcaoEntrega]:checked').val() === 'entrega' ? 1 : 0;
     const escolhaEndereco = $('input[name=opcaoEndereco]:checked').val() === 'enderecoSalvo' ? 1 : 0;
-    const taxa = parseFloat($('#taxa-entrega').text().replace('R$ ', ''));
-    const rua = $('#rua').val();
-    const numero = $('#numero').val();
+    const taxa = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
+    const rua = escolhaEntrega == 1 ? $('#rua').val() : loja.RUA_EMP;
+    const numero = escolhaEntrega == 1 ? $('#numero').val() : loja.NUMERO_EMP;
     const complemento = $('#complemento').val();
-    const bairro = $("#bairroPesquisa").data('id-bairro');;
-    const cidade = loja.ID_CIDADE_EMP;
+    const bairro = escolhaEntrega == 1 ? $("#dropdownBairros").val() : loja.BAIRRO_EMP;
+    const cidade = escolhaEntrega == 1 ? $("#dropdownCidades").val() : loja.ID_CIDADE_EMP;
     const endereco = $('input[name=opcaoEndereco]:checked').data('id-endereco') || null;
-
-    // Validação de telefone
-    if (telefone.length !== 15) {
-        alert("Telefone inválido. Deve conter 11 dígitos.");
-        $("#telefone").addClass("is-invalid");
-        return;
-    } else {
-        $("#telefone").removeClass("is-invalid");
-    }
-
-    // Validação de nome
-    if ($.trim(nome) === "") {
-        alert("Nome é obrigatório.");
-        $("#nome").addClass("is-invalid");
-        return;
-    } else {
-        $("#nome").removeClass("is-invalid");
-    }
 
     // Validação de entrega ou retirada
     const opcaoEntrega = $('input[name="opcaoEntrega"]:checked');
@@ -1097,20 +1161,22 @@ $('#continuarPagamento').click(function () {
         if (opcaoEndereco.val() === "enderecoNovo") {
             const rua = $("#rua").val();
             const numero = $("#numero").val();
-            const bairro = $("#bairroPesquisa").val();
-            const cidade = $("#cidade").val();
-            if ($.trim(rua) === "" || $.trim(numero) === "" || $.trim(bairro) === "" || $.trim(cidade) === "") {
-                alert("Preencha todos os campos do novo endereço.");
+            const bairro = $("#dropdownBairros").val();
+            const cidade = $("#dropdownCidades").val();
+            if ($.trim(rua) === "" || $.trim(numero) === "") {
+                alert("A rua e número são obrigatórios");
                 return;
-            }
-            var bairroEscolhido = $("#bairroPesquisa").val();
-            if (!bairroEscolhido || !bairrosEntrega.some(bairro => bairro.NOME_BAIRRO.toLowerCase().trim() === bairroEscolhido.toLowerCase().trim())) {
-                alert("Selecione um bairro da lista");
-                return;
-            }
+            };
 
-            if (bairro === undefined) {
-                alert("Selecione o bairro clicando na lista")
+            if (cidade == "") {
+                alert("Selecione uma cidade clicando na lista");
+                $("#dropdownCidades").addClass("is-invalid");
+                return;
+            };
+
+            if (bairro == "") {
+                alert("Selecione o bairro clicando na lista");
+                $("#dropdownBairros").addClass("is-invalid");
                 return;
             };
         }
@@ -1140,6 +1206,9 @@ $('#continuarPagamento').click(function () {
 
 $('#voltarContato').click(function (e) {
     $("input[name='opcaoEntrega']").prop("checked", false);
+    $("input[name='opcaoEndereco']").prop("checked", false);
+    $('#opcoesEndereco').hide();
+    $('#lojaCard').hide();
     $('#taxaEntrega').hide();
     $("#taxa-entrega").text('0.00');
     atualizarExibicaoCarrinho();
@@ -1198,7 +1267,8 @@ function enviarPedidoAPI() {
         formaPagamento,
         precoTotal,
         troco,
-        observacao
+        observacao,
+        lojaID
     };
 
     console.log(dadosParaEnviar);
@@ -1217,11 +1287,11 @@ function enviarPedidoAPI() {
                 cliente = undefined;
                 atualizarExibicaoCarrinho();
                 // Faça qualquer outra ação necessária após a confirmação
-                alert('Pedido confirmado com sucesso!');
+                alert('Pedido enviado com sucesso! Você receberá atualizações sobre seu pedido pelo WhatsaApp informado');
             } else {
                 document.getElementById("loadingPopup").style.display = "none";
 
-                alert('Ocorreu um erro na confirmação do pedido.');
+                alert('Ocorreu um erro no envio do pedido.');
 
             }
         },
@@ -1229,7 +1299,7 @@ function enviarPedidoAPI() {
             document.getElementById("loadingPopup").style.display = "none";
 
             console.log('Erro na solicitação AJAX: ' + error);
-            alert('Ocorreu um erro na solicitação.');
+            alert('Ocorreu um erro no envio do pedido. Tente novamente');
         }
     });
 }
