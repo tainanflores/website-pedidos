@@ -62,12 +62,12 @@ function carregarProdutos(loja_ddns) {
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            console.log(data.loja);
+            //console.log(data.loja);
             loja = data.loja[0];
             produtos = data.produtos;
             categorias = data.categorias;
             bairrosEntrega = data.bairros;
-            console.log(url);
+            //console.log(url);
 
             createPage(produtos, categorias);
             document.getElementById("loadingPopup").style.display = "none";
@@ -588,7 +588,7 @@ function atualizarExibicaoCarrinho() {
     $(carrinhoSelector).empty();
 
     let total = 0;
-    let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
+    //let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
 
     // Iterar sobre os produtos no carrinho e atualizar a exibição
     carrinho.forEach((product, index) => {
@@ -636,12 +636,14 @@ function atualizarExibicaoCarrinho() {
         }
     });
 
-    total += taxaEntrega;
+    //total += taxaEntrega;
     $(".sacolaTotal").empty(); // Limpa o conteúdo existente
     // Adicione o total à exibição da sacola
     $(".sacolaTotal").append(`
 
-                <div class="btn btn-light disabled" disabled><strong>Total: R$ <span id="total-carrinho">${total.toFixed(2)}</span></strong></div>
+                <div class="btn btn-light disabled" disabled>
+                    <strong>Total: R$ <span id="total-carrinho">${total.toFixed(2)}</span></strong>
+                </div>
     `);
 }
 
@@ -1073,25 +1075,25 @@ $('input[name="opcaoEntrega"]').on('change', function () {
 // Quando a opção de endereço é alterada
 $('#listaEnderecos').on('change', 'input[name="opcaoEndereco"]', function () {
     const opcaoSelecionada = $(this).val();
-    var taxa = $(this).data('taxa-endereco');;
+    //var taxa = $(this).data('taxa-endereco');;
 
     if (opcaoSelecionada === 'enderecoSalvo') {
         // Mostrar o card com o endereço da loja
         $('#enderecoCliente').hide();
-        if (taxa != 0) {
-            $("#taxa-entrega").text(`R$ ${taxa.toFixed(2)}`)
-        } else {
-            $("#taxa-entrega").text(`Grátis`)
-        }
-        $('#taxaEntrega').show();
-        atualizarExibicaoCarrinho();
+        // if (taxa != 0) {
+        //     $("#taxa-entrega").text(`R$ ${taxa.toFixed(2)}`)
+        // } else {
+        //     $("#taxa-entrega").text(`Grátis`)
+        // }
+        // $('#taxaEntrega').show();
+        //atualizarExibicaoCarrinho();
 
     } else if (opcaoSelecionada === 'enderecoNovo') {
         // Ocultar o card quando a opção for entrega
         $('#enderecoCliente').show();
-        $("#taxa-entrega").text('0.00')
-        $('#taxaEntrega').hide();
-        atualizarExibicaoCarrinho();
+        //$("#taxa-entrega").text('0.00')
+        //$('#taxaEntrega').hide();
+        //atualizarExibicaoCarrinho();
 
     } else {
         $('#lojaCard').hide();
@@ -1125,8 +1127,7 @@ function obterIdBairroPorNome(nomeBairro, bairros) {
 
 ////////////////////////////////////*AQUI COMEÇA O CÓDIGO RELACIONADO A CONFIRMAÇÃO DO PEDIDO *////////////////////////////////////////////////
 
-$('#continuarPagamento').click(function () {
-
+$('#continuarPagamento').click(async function () {
 
     // Recupere as informações do modal de dados pessoais
     const telefone = $('#telefone').val();
@@ -1134,7 +1135,7 @@ $('#continuarPagamento').click(function () {
     const clienteID = cliente.length === 0 ? null : cliente[0].ID_CLI;
     const escolhaEntrega = $('input[name=opcaoEntrega]:checked').val() === 'entrega' ? 1 : 0;
     const escolhaEndereco = $('input[name=opcaoEndereco]:checked').val() === 'enderecoSalvo' ? 1 : 0;
-    const taxa = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
+    //const taxa = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
     const rua = escolhaEntrega == 1 ? $('#rua').val() : loja.RUA_EMP;
     const numero = escolhaEntrega == 1 ? $('#numero').val() : loja.NUMERO_EMP;
     const complemento = $('#complemento').val();
@@ -1180,6 +1181,40 @@ $('#continuarPagamento').click(function () {
                 return;
             };
         }
+    }
+
+    var IdEmp = lojaID; // Substitua pelo valor real
+    var RetornaEmpresa = true; // Substitua pelo valor real
+    var EnderecoDestino = "Rua Sergipe"; // Substitua pelo valor real
+    var NumeroDestino = "710"; // Substitua pelo valor real
+    var cidadeDestino = "Divinópolis"; // Substitua pelo valor real
+    var bairroDestino = "Centro"; // Substitua pelo valor real
+    var uf = "MG"; // Substitua pelo valor real
+    let taxa;
+
+    try {
+        const apiResponse = await getFrete(IdEmp, RetornaEmpresa, EnderecoDestino, NumeroDestino, cidadeDestino, bairroDestino, uf);
+
+        taxa = apiResponse.response.estimativa_valor
+        // let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
+        let subTotal = parseFloat($('#total-carrinho')[0].innerText);
+        let total = taxa + subTotal;
+
+        $(".sacolaTotal").empty(); // Limpa o conteúdo existente
+        // Adicione o total à exibição da sacola
+        $(".sacolaTotal").append(`
+
+                <div class="btn btn-light disabled" disabled>
+                    <p>Sub-Total: R$ <span>${subTotal.toFixed(2)}</span></p>
+                    <p>Taxa de Entrega: R$ <span>${taxa.toFixed(2)}</span></p>
+                    <strong>Total: R$ <span id="total-carrinho">${total.toFixed(2)}</span></strong>
+                </div>
+    `);
+
+
+    } catch (error) {
+        // Tratamento de erro
+        console.error("Erro ao obter frete:", error);
     }
 
     // Crie um objeto com as informações
@@ -1249,6 +1284,22 @@ $('#confirmarPedido').click(function (e) {
     $('#escolherPagamentoModal').modal('hide');
 
 });
+
+async function getFrete(IdEmp, RetornaEmpresa, EnderecoDestino, NumeroDestino, cidadeDestino, bairroDestino, uf) {
+    var url = `https://mundodigital.ddns.net:5000/api/EmpresaPremium/${IdEmp}/${RetornaEmpresa}/${EnderecoDestino}/${NumeroDestino}/${cidadeDestino}/${bairroDestino}/${uf}`;
+
+    try {
+        const response = await $.ajax({
+            url: url,
+            type: 'GET'
+        });
+        console.log("API Response:", response);
+        return response; // Retorna a resposta para uso posterior
+    } catch (error) {
+        console.error("Erro na chamada da API:", error);
+        throw error; // Propaga o erro para ser tratado externamente
+    }
+}
 
 function enviarPedidoAPI() {
     // Obtenha os dados do carrinho e dados do cliente da sessionStorage
