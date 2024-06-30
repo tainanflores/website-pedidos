@@ -282,12 +282,15 @@
                         <textarea class="form-control" id="observacao" rows="3"
                             placeholder="Digite sua observação aqui"></textarea>
                     </div>
-                    <div class="modal-footer" id="sacolaFooter">
+                    <div class="modal-footer" id="pagamentoFooter">
                         <div class="sacolaTotal"></div>
                         <!-- Botões de Confirmar Pedido e Voltar -->
-                        <button class="btn btn-info" id="confirmarPedido">Confirmar pedido</button>
-                        <button class="btn btn-secondary" id="voltarDados" class="close" data-dismiss="modal"
-                            aria-label="Close">Voltar</button>
+                        <div class="botoes-modal" style="text-align:right;">
+                            <button class="btn btn-secondary mb-1" style="width: 80%;" id="voltarDados" class="close"
+                                data-dismiss="modal" aria-label="Close">Voltar</button>
+                            <button class="btn btn-info" style="width: 80%;" id="confirmarPedido">Finalizar</button>
+
+                        </div>
                     </div>
                 </div>
             </div>

@@ -476,6 +476,12 @@ main::-webkit-scrollbar-track {
     max-width: 200px;
 }
 
+.botoes-modal-vertical {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
 .modal-body {
     max-height: 400px;
     /* Defina a altura máxima da sacola conforme necessário */
@@ -497,6 +503,16 @@ main::-webkit-scrollbar-track {
     background-color: #fff;
     padding: 10px;
     border-top: 1px solid #ddd;
+    /* justify-content: space-between; */
+}
+
+#pagamentoFooter {
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    justify-content: space-around;
 }
 
 /* Estilo personalizado para a barra de rolagem */

@@ -916,7 +916,7 @@ function popularBairros(bairros, id) {
 
         var selectedBairroId = $(this).val();
 
-        $('#taxaEntrega').show();
+        //$('#taxaEntrega').show();
 
         // Encontrar o bairro selecionado nos dados originais para obter informações adicionais, se necessário
         var selectedBairro = bairros.find(function (bairro) {
@@ -1129,6 +1129,7 @@ function obterIdBairroPorNome(nomeBairro, bairros) {
 
 $('#continuarPagamento').click(async function () {
 
+    document.getElementById("loadingPopup").style.display = "flex";
     // Recupere as informações do modal de dados pessoais
     const telefone = $('#telefone').val();
     const nome = $('#nome').val();
@@ -1204,10 +1205,10 @@ $('#continuarPagamento').click(async function () {
         // Adicione o total à exibição da sacola
         $(".sacolaTotal").append(`
 
-                <div class="btn btn-light disabled" disabled>
-                    <p>Sub-Total: R$ <span>${subTotal.toFixed(2)}</span></p>
-                    <p>Taxa de Entrega: R$ <span>${taxa.toFixed(2)}</span></p>
-                    <strong>Total: R$ <span id="total-carrinho">${total.toFixed(2)}</span></strong>
+                <div class="btn btn-light disabled" style="text-align:right;" disabled>
+                    <p class="m-1">Sub-Total: R$ <span>${subTotal.toFixed(2)}</span></p>
+                    <p class="m-1">Entrega: R$ <span>${taxa.toFixed(2)}</span></p>
+                    <p class="m-1"><strong>Total: R$ <span id="total-carrinho">${total.toFixed(2)}</span></strong></p>
                 </div>
     `);
 
@@ -1215,6 +1216,7 @@ $('#continuarPagamento').click(async function () {
     } catch (error) {
         // Tratamento de erro
         console.error("Erro ao obter frete:", error);
+        return;
     }
 
     // Crie um objeto com as informações
@@ -1236,6 +1238,7 @@ $('#continuarPagamento').click(async function () {
     sessionStorage.setItem('dadosCliente', JSON.stringify(dadosCliente));
 
     $('#enderecoPedidoModal').modal('hide');
+    document.getElementById("loadingPopup").style.display = "none";
     $('#escolherPagamentoModal').modal('show');
 });
 
@@ -1280,8 +1283,9 @@ $('#confirmarPedido').click(function (e) {
 
     document.getElementById("loadingPopup").style.display = "flex";
     // Se todas as verificações passarem, prossiga com a confirmação do pedido
-    enviarPedidoAPI();
-    $('#escolherPagamentoModal').modal('hide');
+    //enviarPedidoAPI();
+    //$('#escolherPagamentoModal').modal('hide');
+    verificarEstoqueEChecarPedido();
 
 });
 
@@ -1354,3 +1358,86 @@ function enviarPedidoAPI() {
         }
     });
 }
+
+async function verificarEstoqueEChecarPedido() {
+    const carrinho = JSON.parse(sessionStorage.getItem('carrinho'));
+    const productCodes = carrinho.map(item => item.id);
+
+    try {
+        const response = await $.ajax({
+            url: 'https://mundodigital.ddns.net:3000/api/checar-estoque',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ codes: productCodes })
+        });
+
+        let estoqueInsuficiente = false;
+
+        carrinho.forEach(item => {
+            const estoqueAtual = response[item.id];
+            if (item.quantidade > estoqueAtual) {
+                item.quantidade = estoqueAtual;
+                estoqueInsuficiente = true;
+            }
+
+            if (estoqueAtual === 0) {
+                const index = carrinho.findIndex(cartItem => cartItem.id === item.id);
+                if (index !== -1) {
+                    carrinho.splice(index, 1);
+                }
+            }
+        });
+
+        if (estoqueInsuficiente) {
+            alert(`Alguns produtos sofreram alteração no estoque. Por favor revise o seu carrinho de compras. \n Obs: Produtos com estoque zerados serão removidos do carrinho`);
+
+            sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
+            atualizarExibicaoCarrinho();
+            $('#escolherPagamentoModal').modal('hide');
+            document.getElementById("loadingPopup").style.display = "none";
+            $('#sacolaModal').modal('show');
+        } else {
+            document.getElementById("loadingPopup").style.display = "flex";
+            enviarPedidoAPI();
+            $('#escolherPagamentoModal').modal('hide');
+        }
+    } catch (error) {
+        console.error('Erro ao verificar estoque:', error);
+        alert('Erro ao verificar estoque. Por favor, tente novamente.');
+    }
+}
+
+const checkStatus = async () => {
+    try {
+        if (!lojaID) {
+            return;
+        };
+
+        const response = await $.ajax({
+            url: `https://mundodigital.ddns.net:3000/api/status?id=${lojaID}`,
+            method: 'GET'
+        });
+
+        if (response.status === false) {
+            if ($('#avisoFechado').is(':hidden')) {
+                alert('Desculpe, essa loja parou de aceitar pedidos nesse momento');
+                location.reload();
+            }
+        } else {
+            if ($('#avisoFechado').is(':visible')) {
+                location.reload();
+            } else {
+                //$('#status-result').append(`<p>Company Status: ${response.status}</p>`);
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error); alert('Erro ao buscar status da loja. Recarregue a página por favor.');
+        location.reload();
+        //$('#status-result').text('Erro ao buscar status da loja. Recarregue a página por favor.');
+    }
+};
+
+
+setInterval(checkStatus, 5000);
+
+checkStatus();
