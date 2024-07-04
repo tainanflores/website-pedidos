@@ -9,6 +9,10 @@ if (lojaCpfCnpj) {
     var cpf_cnpj = lojaCpfCnpj;
     var tel = telefoneCliente;
 
+    if (cpf_cnpj != localStorage.getItem('idUsuario')) {
+        sessionStorage.removeItem('carrinho');
+    }
+
     localStorage.setItem('idUsuario', cpf_cnpj);
     localStorage.setItem('telUsuario', tel);
 } else {
@@ -80,7 +84,7 @@ function carregarProdutos(loja_ddns) {
 
 function createPage(produtos, categorias) {
     categorias.sort((a, b) => a.GRUP_DESCRICAO.localeCompare(b.GRUP_DESCRICAO));
-    let pedidoMin = loja.VR_PEDIDO_MIN || 0;
+    let pedidoMin = loja.VR_PEDIDO_MIN_EMP || 0;
     app.innerHTML = `
         <div class="container-fluid">
             <div class="row">
@@ -88,9 +92,9 @@ function createPage(produtos, categorias) {
                 <nav id="sidebar" class="col-md-3 col-lg-3 d-md-block bg-light sidebar mb-3">
                     <div class="position-sticky">
                         <div class="sidebar-header text-center py-1">
-                            <img src="/fotos/${lojaCpfCnpj}/logo/logo.png" onerror="this.src='assets/png/placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
+                            <img src="/fotos/${lojaCpfCnpj}/logo/logo_original.png" onerror="this.src='assets/png/placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
                                 style="max-width: 140px;">
-                            <p class="small pt-2" style="color:black;"><strong>Pedido Mínimo:</strong> R$ ${parseFloat(pedidoMin, 10).toFixed(2)}</p>    
+                            <p class="small pt-2" style="color:#dc1a1a;"><strong>Pedido Mínimo:</strong> R$ ${parseFloat(pedidoMin, 10).toFixed(2)}</p>    
                         </div>
                         
                         <div class="sidebar-scroll">
@@ -365,7 +369,7 @@ function openProductPopup(product) {
 
     $(popupSelector).find('.modal-body').html(`
         <p class="m-0 p-0 text-right" style="font-size:xx-small"><i>*Imagens meramente ilustrativas</i></p>        
-        <p style="font-size:x-small"><i><strong>Descrição:</strong> asdjo asd,asod ad,sdla,dslaçs pĺapś pópóaspódaçlçfkapújgla piplfkasjfas'plasdçlklapsdaslkfçlasjkfaplçm plkfgdplkalsljkf lkdçlfdsĺfflpsik  çkslkdaçljtpáj ápjfçakopaialjdflkaçĺ fapklsakfpçkfçaikstye</i></p>
+        <p style="font-size:x-small"><i><strong>Descrição:</strong>${product.OBS_PROD}</i></p>
         <p id="productPrice" style="color:green; font-weigth:strong;">R$ ${product.VR_VENDA3_ESTOQUE.toFixed(2)}</p>
         <div class="row pl-3">
             <label for="quantidade">Quantidade:</label>        
@@ -598,7 +602,7 @@ function atualizarExibicaoCarrinho() {
 
         // Crie um novo elemento de cartão Bootstrap para cada produto na sacola
         const produtoHTML = `
-            <div class="card mb-1">
+            <div class="card mb-1" style="border:none; border-bottom: 1px solid rgba(0, 0, 0, .125); border-radius:0;">
                 <div class="card-body p-1">
                     <div class="row">
                         <div class="col-0 col-sm-2 col-md-2 d-none d-sm-block">
@@ -619,7 +623,7 @@ function atualizarExibicaoCarrinho() {
                         </div>
                         <div class="col-1 col-md-2 p-1 align-self-center">                        
                             <button class="btn px-2 py-0 m-0 remover-produto" data-index="0">
-                                <i class="fa fa-trash" style="color: crimson;"></i>
+                                <i class="fa fa-trash" style="color: crimson; position:inherit"></i>
                             </button>                                            
                         </div>
                     </div>
@@ -818,7 +822,8 @@ function checkClienteByTelefone(telefone, id) {
 
                 // Função para formatar um endereço
                 function formatarEndereco(endereco) {
-                    return `${endereco.RUA_CLI_END}, ${endereco.NUMERO_CLI_END}<br>${endereco.NOME_BAIRRO.trim()} - ${endereco.NOME_CID}`;
+                    return `<p class='m-0' id='endereco_${endereco.ID_CLI_END}'><span class='endereco-salvo-rua'>${endereco.RUA_CLI_END},</span> n° <span class='endereco-salvo-numero'>${endereco.NUMERO_CLI_END}</span></p>
+                    <p class='m-0'><span class='endereco-salvo-bairro' data-bairro-id="${endereco.ID_BAIRRO_CLI_END}">${endereco.NOME_BAIRRO.trim()}</span> - <span class='endereco-salvo-cidade'>${endereco.NOME_CID}</span></p>`;
                 }
 
                 enderecos.forEach(function (endereco, index) {
@@ -832,7 +837,7 @@ function checkClienteByTelefone(telefone, id) {
                             <div class="card">
                                 <div class="card-body p-2 small">
                                     <h6 class="card-title">Endereço ${index + 1}</h6>
-                                    <p class="card-text enderecoFormatado">${enderecoFormatado}</p>
+                                    ${enderecoFormatado}
                                     <div class="flex-box">
                                         <a href="#" class="btn-excluir-endereco p-0" style="display:none; float:left; color:black">Excluir</a>
                                         <a href="#" class="btn-editar-endereco p-0" style="display:none; float:right;">Editar</a>
@@ -907,7 +912,8 @@ function popularBairros(bairros, id) {
 
     // Adicionar opções ao dropdown
     bairrosDaCidade.forEach(function (bairro) {
-        dropdownBairros.append('<option value="' + bairro.ID_BAIRRO + '">' + bairro.NOME_BAIRRO.trim() + '</option>');
+        //dropdownBairros.append('<option value="' + bairro.ID_BAIRRO + '">' + bairro.NOME_BAIRRO.trim() + '</option>');
+        dropdownBairros.append(`<option value= "${bairro.ID_BAIRRO}" data-nome-bairro="${bairro.NOME_BAIRRO.trim()}">${bairro.NOME_BAIRRO.trim()}</option>`)
     });
 
     // Ao selecionar um bairro no dropdown
@@ -1074,6 +1080,8 @@ $('input[name="opcaoEntrega"]').on('change', function () {
 
 // Quando a opção de endereço é alterada
 $('#listaEnderecos').on('change', 'input[name="opcaoEndereco"]', function () {
+
+    $('input[name="opcaoEntrega"][value="entrega"]').prop('checked', true);
     const opcaoSelecionada = $(this).val();
     //var taxa = $(this).data('taxa-endereco');;
 
@@ -1129,7 +1137,6 @@ function obterIdBairroPorNome(nomeBairro, bairros) {
 
 $('#continuarPagamento').click(async function () {
 
-    document.getElementById("loadingPopup").style.display = "flex";
     // Recupere as informações do modal de dados pessoais
     const telefone = $('#telefone').val();
     const nome = $('#nome').val();
@@ -1143,6 +1150,7 @@ $('#continuarPagamento').click(async function () {
     const bairro = escolhaEntrega == 1 ? $("#dropdownBairros").val() : loja.BAIRRO_EMP;
     const cidade = escolhaEntrega == 1 ? $("#dropdownCidades").val() : loja.ID_CIDADE_EMP;
     const endereco = $('input[name=opcaoEndereco]:checked').data('id-endereco') || null;
+    let taxa = 0;
 
     // Validação de entrega ou retirada
     const opcaoEntrega = $('input[name="opcaoEntrega"]:checked');
@@ -1153,6 +1161,12 @@ $('#continuarPagamento').click(async function () {
 
     // Validação de endereço, se a entrega for escolhida
     if (opcaoEntrega.val() === "entrega") {
+        let rua;
+        let numero;
+        let cidade;
+        let bairroID;
+        let bairro;
+        let uf;
         const opcaoEndereco = $('input[name="opcaoEndereco"]:checked');
         if (!opcaoEndereco.length) {
             alert("Selecione um endereço padrão ou escolha um novo endereço.");
@@ -1161,10 +1175,12 @@ $('#continuarPagamento').click(async function () {
 
         // Validação do novo endereço, se selecionado
         if (opcaoEndereco.val() === "enderecoNovo") {
-            const rua = $("#rua").val();
-            const numero = $("#numero").val();
-            const bairro = $("#dropdownBairros").val();
-            const cidade = $("#dropdownCidades").val();
+            bairroID = $("#dropdownBairros").val();
+            dadosBairro = dadosBairroSelecionado(bairroID);
+            rua = $("#rua").val();
+            numero = $("#numero").val();
+            bairro = dadosBairro[0].NOME_BAIRRO;
+            cidade = dadosBairro[0].NOME_CID;
             if ($.trim(rua) === "" || $.trim(numero) === "") {
                 alert("A rua e número são obrigatórios");
                 return;
@@ -1181,42 +1197,52 @@ $('#continuarPagamento').click(async function () {
                 $("#dropdownBairros").addClass("is-invalid");
                 return;
             };
+        } else {
+            var selectedRadio = $('input[name="opcaoEndereco"]:checked');
+            var parentDiv = selectedRadio.next();
+            rua = parentDiv.find('.endereco-salvo-rua').text().trim().replace(',', '');
+            numero = parentDiv.find('.endereco-salvo-numero').text().trim();
+            bairroID = parentDiv.find('.endereco-salvo-bairro').data('bairro-id');
+            bairro = parentDiv.find('.endereco-salvo-bairro').text().trim();
+            cidade = parentDiv.find('.endereco-salvo-cidade').text().trim();
         }
-    }
 
-    var IdEmp = lojaID; // Substitua pelo valor real
-    var RetornaEmpresa = true; // Substitua pelo valor real
-    var EnderecoDestino = "Rua Sergipe"; // Substitua pelo valor real
-    var NumeroDestino = "710"; // Substitua pelo valor real
-    var cidadeDestino = "Divinópolis"; // Substitua pelo valor real
-    var bairroDestino = "Centro"; // Substitua pelo valor real
-    var uf = "MG"; // Substitua pelo valor real
-    let taxa;
+        try {
+            document.getElementById("loadingPopup").style.display = "flex";
 
-    try {
-        const apiResponse = await getFrete(IdEmp, RetornaEmpresa, EnderecoDestino, NumeroDestino, cidadeDestino, bairroDestino, uf);
+            if (loja.CHAVE_KEY_MACHINE_EMP) {
+                uf = await getUfByAddress(rua, numero, bairro, cidade);
 
-        taxa = apiResponse.response.estimativa_valor
-        // let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
-        let subTotal = parseFloat($('#total-carrinho')[0].innerText);
-        let total = taxa + subTotal;
+                const apiResponse = await getFrete(lojaID, true, rua, numero, cidade, bairro, uf);
 
-        $(".sacolaTotal").empty(); // Limpa o conteúdo existente
-        // Adicione o total à exibição da sacola
-        $(".sacolaTotal").append(`
+                taxa = apiResponse.response.estimativa_valor
+            } else {
+                let dadosBairro = dadosBairroSelecionado(bairroID);
+                taxa = parseFloat(dadosBairro[0].VR_FRETE_BAIRROQ);
+            }
+
+            // let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
+            let subTotal = parseFloat($('#total-carrinho')[0].innerText);
+            let total = taxa + subTotal;
+
+            $(".sacolaTotal").empty(); // Limpa o conteúdo existente
+            // Adicione o total à exibição da sacola
+            $(".sacolaTotal").append(`
 
                 <div class="btn btn-light disabled" style="text-align:right;" disabled>
                     <p class="m-1">Sub-Total: R$ <span>${subTotal.toFixed(2)}</span></p>
                     <p class="m-1">Entrega: R$ <span>${taxa.toFixed(2)}</span></p>
                     <p class="m-1"><strong>Total: R$ <span id="total-carrinho">${total.toFixed(2)}</span></strong></p>
                 </div>
-    `);
+            `);
 
+        } catch (error) {
+            // Tratamento de erro
+            console.error("Erro ao obter frete:", error);
+            document.getElementById("loadingPopup").style.display = "none";
+            return;
+        }
 
-    } catch (error) {
-        // Tratamento de erro
-        console.error("Erro ao obter frete:", error);
-        return;
     }
 
     // Crie um objeto com as informações
@@ -1242,6 +1268,30 @@ $('#continuarPagamento').click(async function () {
     $('#escolherPagamentoModal').modal('show');
 });
 
+async function getUfByAddress(street, number, neighborhood, city) {
+    var address = `${number} ${street}, ${neighborhood}, ${city}, Brazil`;
+    var apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    let uf;
+    await $.ajax({
+        url: apiUrl,
+        method: 'GET'
+    }).then(function (response) {
+        if (response.length > 0) {
+            // Analisa a resposta para encontrar a UF
+            var display_name = response[0].display_name;
+            var addressParts = display_name.split(', ');
+            uf = addressParts[addressParts.length - 4];
+        } else {
+            uf = null
+        }
+    }).catch(function (error) {
+        console.error('Erro ao consultar o endereço:', error);
+        throw error;
+    });
+
+    return uf;
+}
+
 $('#voltarContato').click(function (e) {
     $("input[name='opcaoEntrega']").prop("checked", false);
     $("input[name='opcaoEndereco']").prop("checked", false);
@@ -1254,10 +1304,19 @@ $('#voltarContato').click(function (e) {
 });
 
 $('#voltarDados').click(function (e) {
+    atualizarExibicaoCarrinho();
     $('#enderecoPedidoModal').modal('show');
 });
 
 $('#confirmarPedido').click(function (e) {
+    var pedidoMin = parseFloat(loja.VR_PEDIDO_MIN_EMP);
+    var totalCarrinho = parseFloat($('#total-carrinho')[0].innerText);
+
+    if (pedidoMin > totalCarrinho) {
+        alert(`O valor dos produtos deve ser superior ao pedido mínimo de R$ ${parseFloat(loja.VR_PEDIDO_MIN_EMP).toFixed(2)}`)
+        return;
+    }
+
     // Verifique se uma forma de pagamento foi selecionada
     const formaPagamento = $('#formaPagamento').val();
     if (!formaPagamento) {
@@ -1343,11 +1402,10 @@ function enviarPedidoAPI() {
                 atualizarExibicaoCarrinho();
                 // Faça qualquer outra ação necessária após a confirmação
                 alert('Pedido enviado com sucesso! Você receberá atualizações sobre seu pedido pelo WhatsaApp informado');
+                location.reload();
             } else {
                 document.getElementById("loadingPopup").style.display = "none";
-
                 alert('Ocorreu um erro no envio do pedido.');
-
             }
         },
         error: function (error) {
@@ -1355,6 +1413,7 @@ function enviarPedidoAPI() {
 
             console.log('Erro na solicitação AJAX: ' + error);
             alert('Ocorreu um erro no envio do pedido. Tente novamente');
+            location.reload();
         }
     });
 }
@@ -1437,6 +1496,12 @@ const checkStatus = async () => {
     }
 };
 
+function dadosBairroSelecionado(id) {
+    dadosBairro = $.grep(bairrosEntrega, function (bairro) {
+        return bairro.ID_BAIRRO == id;
+    });
+    return dadosBairro;
+}
 
 setInterval(checkStatus, 5000);
 

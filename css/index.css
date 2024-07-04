@@ -384,7 +384,10 @@ main::-webkit-scrollbar-track {
         display: block;
     }
 
-    ;
+    .modal-dialog {
+        display: contents;
+        max-width: fit-content;
+    }
 }
 
 /* Estilo para a descrição do produto no modal com quebra de linha automática */
@@ -470,6 +473,14 @@ main::-webkit-scrollbar-track {
 #sacolaModal {
     overflow-y: hidden;
     /* Oculta a barra de rolagem na janela toda */
+}
+
+.modal-dialog {
+    max-width: fit-content;
+}
+
+#confirmacaoModal {
+    justify-self: center;
 }
 
 #confirmacaoModalContent {
