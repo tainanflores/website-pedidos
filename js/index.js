@@ -669,7 +669,7 @@ function atualizarExibicaoCarrinho() {
                 <div class="card-body p-1">
                     <div class="row">
                         <div class="col-0 col-sm-2 col-md-2 d-none d-sm-block">
-                            <img src=${product.imagem} onerror="this.src='assets/jpg/placeholder_thumb.jpg'" alt="${product.ID_PROD}" class="img-thumbnail" style="max-width: 50px; max-height: 50px;">
+                            <img src=/fotos/${lojaCpfCnpj}/${product.id}/${product.id}_0_thumb.jpg onerror="this.src='assets/jpg/placeholder_thumb.jpg'" alt="${product.id}" class="img-thumbnail" style="max-width: 50px; max-height: 50px;">
                         </div>
                         <div class="col-5 col-sm-4 col-md-4 small texto-cortado align-self-center">
                         ${product.quantidade}x ${product.nome}
