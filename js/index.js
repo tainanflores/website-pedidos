@@ -92,7 +92,7 @@ function createPage(produtos, categorias) {
                 <nav id="sidebar" class="col-md-3 col-lg-3 d-md-block bg-light sidebar mb-3">
                     <div class="position-sticky">
                         <div class="sidebar-header text-center py-1">
-                            <img src="/fotos/${lojaCpfCnpj}/logo/logo_original.png" onerror="this.src='assets/png/placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
+                            <img src="/fotos/${lojaCpfCnpj}/logo/logo_web.png" onerror="this.src='assets/png/placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
                                 style="max-width: 140px;">
                             <p class="small pt-2" style="color:#dc1a1a;"><strong>Pedido Mínimo:</strong> R$ ${parseFloat(pedidoMin, 10).toFixed(2)}</p>    
                         </div>
@@ -183,7 +183,7 @@ function createProductCard(produto) {
             <div class="card shadow-sm" style="height:100px;">
                 <div class="row no-gutters">
                     <div class="col-4 p-2 " style="height: 100px;">
-                        <img src="/fotos/${lojaCpfCnpj}/${produto.ID_PROD}/${produto.ID_PROD}_thumb.jpg" loading="lazy" onerror="this.src='${imgOnError}'" class="card-img rounded" alt="COD-${produto.ID_PROD}">
+                        <img src="/fotos/${lojaCpfCnpj}/${produto.ID_PROD}/${produto.ID_PROD}_0_thumb.jpg" loading="lazy" onerror="this.src='${imgOnError}'" class="card-img rounded" alt="COD-${produto.ID_PROD}">
                     </div>
                     <div class="col-8 card-body p-0 m-0" bis_skin_checked="1">
                         <div class="row p-0 pr-2 m-0" bis_skin_checked="1" style="height:55px;">
@@ -349,23 +349,25 @@ function openProductPopup(product) {
     $('#carouselInner').empty();
 
     // Adicione as imagens ao carousel
-    let images = [
-        `${product.ID_PROD}_original.jpg`,
-        `${product.ID_PROD}_1.jpg`,
-        `${product.ID_PROD}_2.jpg`,
-        `${product.ID_PROD}_3.jpg`
-        // Adicione mais imagens conforme necessário
-    ];
+    // let images = [
+    //     `${product.ID_PROD}_0_web.jpg`,
+    //     `${product.ID_PROD}_1.jpg`,
+    //     `${product.ID_PROD}_2.jpg`,
+    //     `${product.ID_PROD}_3.jpg`
+    //     // Adicione mais imagens conforme necessário
+    // ];
 
-    images.forEach((image, index) => {
-        let activeClass = index === 0 ? 'active' : '';
-        let imgElement = `
-            <div class="carousel-item ${activeClass}">
-                <img src="/fotos/${lojaCpfCnpj}/${product.ID_PROD}/${image}" alt="${product.NOME_PROD}" class="d-block w-100" onerror="handleImageError(this, ${index})">
-            </div>
-        `;
-        $('#carouselInner').append(imgElement);
-    });
+    // images.forEach((image, index) => {
+    //     let activeClass = index === 0 ? 'active' : '';
+    //     let imgElement = `
+    //         <div class="carousel-item ${activeClass}">
+    //             <img src="/fotos/${lojaCpfCnpj}/${product.ID_PROD}/${image}" alt="${product.NOME_PROD}" class="d-block w-100" onerror="handleImageError(this, ${index})">
+    //         </div>
+    //     `;
+    //     $('#carouselInner').append(imgElement);
+    // });
+
+    loadCarouselImages(product.ID_PROD, lojaCpfCnpj);
 
     $(popupSelector).find('.modal-body').html(`
         <p class="m-0 p-0 text-right" style="font-size:xx-small"><i>*Imagens meramente ilustrativas</i></p>        
@@ -388,6 +390,67 @@ function openProductPopup(product) {
     }
     // Abra a popup
     $(popupSelector).modal('show');
+}
+
+function loadCarouselImages(productCode, lojaCpfCnpj) {
+    const carouselIndicators = document.getElementById('carousel-indicators');
+    const carouselInner = document.getElementById('carousel-inner');
+
+    // Limpar conteúdo anterior
+    carouselIndicators.innerHTML = '';
+    carouselInner.innerHTML = '';
+
+    for (let i = 0; i < 10; i++) {
+        const imageUrl = `/fotos/${lojaCpfCnpj}/${productCode}/${productCode}_${i}_web.jpg`;
+
+        // Adicionar indicadores
+        const indicator = document.createElement('li');
+        indicator.setAttribute('data-target', '#carouselExampleIndicators');
+        indicator.setAttribute('data-slide-to', i);
+        if (i === 0) {
+            indicator.classList.add('active');
+        }
+        carouselIndicators.appendChild(indicator);
+
+        // Adicionar itens do carrossel
+        const carouselItem = document.createElement('div');
+        carouselItem.classList.add('carousel-item');
+        if (i === 0) {
+            carouselItem.classList.add('active');
+        }
+
+        const img = document.createElement('img');
+        img.classList.add('d-block', 'w-100');
+        img.src = imageUrl;
+        img.alt = `Imagem ${i + 1}`;
+        img.onerror = function () { handleImageError(this, i); };
+        carouselItem.appendChild(img);
+
+        carouselInner.appendChild(carouselItem);
+    }
+}
+
+// Função para lidar com o erro de carregamento da imagem
+function handleCarouselImageError(imageElement, index) {
+    const carouselItem = imageElement.parentElement;
+    const indicatorItem = document.querySelector(`[data-slide-to="${index}"]`);
+
+    // Remover a imagem e o indicador do carrossel
+    if (carouselItem) carouselItem.remove();
+    if (indicatorItem) indicatorItem.remove();
+
+    // Se a imagem removida era a ativa, ativar a próxima disponível
+    const activeItems = document.querySelectorAll('.carousel-item.active');
+    if (activeItems.length === 0) {
+        const nextItem = document.querySelector('.carousel-item');
+        if (nextItem) nextItem.classList.add('active');
+    }
+
+    // Atualizar os indicadores para refletir a remoção
+    const indicators = document.querySelectorAll('.carousel-indicators li');
+    indicators.forEach((indicator, idx) => {
+        indicator.setAttribute('data-slide-to', idx);
+    });
 }
 // Função para tratar erro de imagem
 function handleImageError(img, index) {
