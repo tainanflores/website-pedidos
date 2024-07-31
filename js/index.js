@@ -1278,7 +1278,12 @@ $('#continuarPagamento').click(async function () {
 
                 const apiResponse = await getFrete(lojaID, true, rua, numero, cidade, bairro, uf);
 
-                taxa = apiResponse.response.estimativa_valor
+                if (apiResponse.success) {
+                    taxa = apiResponse.response.estimativa_valor
+                } else {
+                    let dadosBairro = dadosBairroSelecionado(bairroID);
+                    taxa = parseFloat(dadosBairro[0].VR_FRETE_BAIRROQ);
+                }
             } else {
                 let dadosBairro = dadosBairroSelecionado(bairroID);
                 taxa = parseFloat(dadosBairro[0].VR_FRETE_BAIRROQ);
