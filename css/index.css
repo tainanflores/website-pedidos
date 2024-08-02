@@ -561,7 +561,7 @@ main::-webkit-scrollbar-track {
     max-width: 200px;
 }
 
-#productCarousel {
+#carouselExampleIndicators {
     width: 250px;
     /* Defina a largura máxima desejada */
     max-height: 300px;
@@ -570,7 +570,7 @@ main::-webkit-scrollbar-track {
     /* Centralizar o carousel */
 }
 
-#productCarousel .carousel-inner img {
+#carouselExampleIndicators .carousel-inner img {
     width: 100%;
     /* Ajustar a largura da imagem ao container */
     height: auto;

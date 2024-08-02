@@ -29,13 +29,12 @@ document.getElementById("loadingPopup").style.display = "flex";
 
 function dadosLoja() {
     $.ajax({
-        url: `https://mundodigital.ddns.net:5000/api/Cliente/${lojaCpfCnpj}?Coluna=cnpj`, // Substitua pelo URL correto da sua API
+        url: `https://mundodigital.ddns.net:5000/api/Cliente/${lojaCpfCnpj}?Coluna=cnpj`,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
             if (data.bloqueadO_CLI === false) {
                 loja_ddns = `${data.weB_DDNS_CLI}:${data.weB_PORTA_CLI}`;
-                //loja_ddns = 'mundodigital.ddns.net:3001'
                 lojaID = data.iD_CLI;
                 carregarProdutos(loja_ddns);
             } else {
@@ -66,12 +65,10 @@ function carregarProdutos(loja_ddns) {
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            //console.log(data.loja);
             loja = data.loja[0];
             produtos = data.produtos;
             categorias = data.categorias;
             bairrosEntrega = data.bairros;
-            //console.log(url);
 
             createPage(produtos, categorias);
             document.getElementById("loadingPopup").style.display = "none";
@@ -136,7 +133,6 @@ function createPage(produtos, categorias) {
         $("#avisoFechado").show();
 
     }
-    // Adiciona produtos iniciais com botão "Ver Mais"
     addInitialProducts(produtos, categorias);
 }
 
@@ -146,7 +142,7 @@ function addInitialProducts(produtos, categorias) {
             <!-- Conteúdo da página de pedidos -->
             ${categorias.map(categoria => {
         var nomeFormatado = primeiraLetraMaiuscula(categoria.GRUP_DESCRICAO);
-        const produtosCategoria = produtos.filter(produto => produto.GRUP_DESCRICAO === categoria.GRUP_DESCRICAO).slice(0, 8); // Apenas os primeiros 8 produtos
+        const produtosCategoria = produtos.filter(produto => produto.GRUP_DESCRICAO === categoria.GRUP_DESCRICAO).slice(0, 8);
         if (produtosCategoria.length > 0) {
             return `
                         <div id="${nomeFormatado.trim()}" class="row categoria-titulo container-fluid">
@@ -160,7 +156,7 @@ function addInitialProducts(produtos, categorias) {
                         </section>
                     `;
         }
-        return ''; // Não renderiza a categoria se não houver produtos
+        return '';
     }).join('')}
         </div>
     `;
@@ -197,7 +193,6 @@ function createProductCard(produto) {
         `;
 }
 
-// Função para adicionar mais produtos de uma categoria
 function addMoreProducts(categoria) {
     mainSection.scrollTop = 0;
     sidebarScroll.scrollTop = 0;
@@ -213,7 +208,7 @@ function addMoreProducts(categoria) {
     contentElement.innerHTML += btnVoltar;
     contentElement.innerHTML += categoriaElement;
     categoriaElement = document.getElementById(`${categoria}`);
-    var produtosCategoria = produtos.filter(produto => produto.GRUP_DESCRICAO === categoria); // Produtos além dos primeiros 8
+    var produtosCategoria = produtos.filter(produto => produto.GRUP_DESCRICAO === categoria);
     contentElement.innerHTML += produtosCategoria.map(createProductCard).join('');
     const cards = document.querySelectorAll('.product-card');
     cards.forEach(card => {
@@ -228,7 +223,6 @@ function addMoreProducts(categoria) {
 
 }
 
-// Função para voltar à exibição inicial de produtos
 function backToInitialView() {
     mainSection.scrollTop = 0;
     sidebarScroll.scrollTop = 0;
@@ -239,7 +233,6 @@ function backToInitialView() {
     toggleSidebar();
 }
 
-// Evento de clique no botão "Ver Mais"
 document.addEventListener('click', function (event) {
     if (event.target.classList.contains('ver-mais') || event.target.classList.contains('ver-categoria')) {
         const categoria = event.target.getAttribute('data-categoria');
@@ -247,7 +240,6 @@ document.addEventListener('click', function (event) {
     }
 });
 
-// Evento de clique no botão "Voltar"
 document.addEventListener('click', function (event) {
     const voltarTodosBtn = $('.voltar-todos');
     if (voltarTodosBtn.length == 0) {
@@ -260,10 +252,9 @@ document.addEventListener('click', function (event) {
 });
 
 function primeiraLetraMaiuscula(texto) {
-    var ignoredWords = ["de", "da", "do", "das", "dos", "para", "com", "em", "por", "sem", "o", "os", "a", "as", "e"]; // Lista de palavras a serem ignoradas
+    var ignoredWords = ["de", "da", "do", "das", "dos", "para", "com", "em", "por", "sem", "o", "os", "a", "as", "e"];
     var palavras = texto.toLowerCase().split(" ");
     for (var i = 0; i < palavras.length; i++) {
-        // Capitaliza a primeira letra de cada palavra, exceto se estiver na lista de palavras ignoradas
         if (!ignoredWords.includes(palavras[i]) || i === 0) {
             palavras[i] = palavras[i].charAt(0).toUpperCase() + palavras[i].slice(1);
         }
@@ -272,18 +263,14 @@ function primeiraLetraMaiuscula(texto) {
 }
 
 function getColor() {
-    // Selecione a imagem
     var image = document.getElementById('logoLoja');
 
     $(image).on('load', function () {
-        // Instancie o ColorThief
         var colorThief = new ColorThief();
 
-        // Extraia as cores principais da imagem
-        var colors = colorThief.getPalette(image, 2); // Aqui você pode ajustar o número de cores desejadas
+        var colors = colorThief.getPalette(image, 2);
 
         var cor1 = 'rgb(' + colors[0][0] + ',' + colors[0][1] + ',' + colors[0][2] + ')';
-        // Aplique as cores extraídas aos elementos no seu site
         $('body').css('background-color', cor1);
     })
 
@@ -304,15 +291,12 @@ function toggleSidebar() {
     }
 }
 
-// Chama a função ao carregar a página
 toggleSidebar();
 
-// Chama a função sempre que a janela for redimensionada
 $(window).resize(function () {
     toggleSidebar();
 });
 
-// Mostra/oculta a barra lateral quando o botão é clicado em telas pequenas
 $(document).on('click', '#sidebarToggle', function () {
     $("#sidebar").toggleClass("active");
     $("#sidebarToggle").toggleClass("active");
@@ -323,13 +307,11 @@ $(document).on('click', '.categoria-btn', function () {
     $("#sidebarToggle").removeClass("active");
 });
 
-// Evento de clique no botão "Comprar"
 $(document).on('click', '.product-card', function () {
-    // Aqui você pode abrir a popup e preenchê-la com os dados do produto
+
     const productId = $(this).closest('.product-card').data('product-id');
     console.log("esse é o id do produto clicado para comprar:", productId);
 
-    // Abra a popup e preencha-a com os dados do produto
     openProductPopup(getProductById(produtos, productId));
 });
 
@@ -371,7 +353,6 @@ function openProductPopup(product) {
     if (qtdCarrinho > 0) {
         $('#qtdCarrinho').show();
     }
-    // Abra a popup
     if (product.QTD_ATUAL_ESTOQUE - qtdCarrinho == 0) {
         $('#addToCartButton').attr('disabled', true);
         $('#quantidadeProduto').val('0')
@@ -387,14 +368,12 @@ function loadCarouselImages(productCode, lojaCpfCnpj) {
     const carouselIndicators = document.getElementById('carousel-indicators');
     const carouselInner = document.getElementById('carousel-inner');
 
-    // Limpar conteúdo anterior
     carouselIndicators.innerHTML = '';
     carouselInner.innerHTML = '';
 
     for (let i = 0; i < 10; i++) {
         const imageUrl = `/fotos/${lojaCpfCnpj}/${productCode}/${productCode}_${i}_web.jpg`;
 
-        // Adicionar indicadores
         const indicator = document.createElement('li');
         indicator.setAttribute('data-target', '#carouselExampleIndicators');
         indicator.setAttribute('data-slide-to', i);
@@ -403,7 +382,6 @@ function loadCarouselImages(productCode, lojaCpfCnpj) {
         }
         carouselIndicators.appendChild(indicator);
 
-        // Adicionar itens do carrossel
         const carouselItem = document.createElement('div');
         carouselItem.classList.add('carousel-item');
         if (i === 0) {
@@ -421,29 +399,24 @@ function loadCarouselImages(productCode, lojaCpfCnpj) {
     }
 }
 
-// Função para lidar com o erro de carregamento da imagem
 function handleCarouselImageError(imageElement, index) {
     const carouselItem = imageElement.parentElement;
     const indicatorItem = document.querySelector(`[data-slide-to="${index}"]`);
 
-    // Remover a imagem e o indicador do carrossel
     if (carouselItem) carouselItem.remove();
     if (indicatorItem) indicatorItem.remove();
 
-    // Se a imagem removida era a ativa, ativar a próxima disponível
     const activeItems = document.querySelectorAll('.carousel-item.active');
     if (activeItems.length === 0) {
         const nextItem = document.querySelector('.carousel-item');
         if (nextItem) nextItem.classList.add('active');
     }
 
-    // Atualizar os indicadores para refletir a remoção
     const indicators = document.querySelectorAll('.carousel-indicators li');
     indicators.forEach((indicator, idx) => {
         indicator.setAttribute('data-slide-to', idx);
     });
 }
-// Função para tratar erro de imagem
 function handleImageError(img, index) {
     if (index === 0) {
         img.src = "/assets/jpg/placeholder_thumb.jpg";
@@ -464,7 +437,6 @@ filterInput.addEventListener('keyup', function () {
 });
 
 function filterProducts() {
-    //console.log(produtos);
     if (filterInput.value.toUpperCase().trim() === '') {
         backToInitialView();
         $(".svg-search-loading").css("display", "none");
@@ -480,13 +452,12 @@ function filterProducts() {
                             </div>`;
     contentElement.innerHTML = "";
     contentElement.innerHTML += categoriaElement;
-    var produtosCategoria = produtos.filter(produto => produto.NOME_PROD.toUpperCase().indexOf(filterValue) > -1); // Produtos além dos primeiros 8
+    var produtosCategoria = produtos.filter(produto => produto.NOME_PROD.toUpperCase().indexOf(filterValue) > -1);
     contentElement.innerHTML += produtosCategoria.map(createProductCard).join('');
     $(".svg-search-loading").css("display", "none");
 
 }
 
-// Função para agrupar os produtos por categoria
 function groupByCategory(produtos, categorias) {
     const grouped = {};
 
@@ -513,33 +484,26 @@ function getProductById(produtos, productId) {
 /////////////////////////////////////////////////////////////////////////////
 
 
-// Verifique se a sessionStorage já contém a sacola
 let carrinho = sessionStorage.getItem('carrinho');
 let cliente;
 if (!carrinho) {
-    // Se a sessionStorage estiver vazia, inicie um carrinho vazio
     carrinho = [];
 } else {
-    // Se a sessionStorage contém dados, analise o JSON
     carrinho = JSON.parse(carrinho);
 }
 
-// Verifica e atualiza o indicador de itens no carrinho sempre que houver alterações no carrinho
 function atualizarIndicadorCarrinho() {
-    var $carrinhoBadge = $('#carrinho-badge'); // Elemento do indicador de itens no carrinho
+    var $carrinhoBadge = $('#carrinho-badge');
 
     if (carrinho) {
-        var numeroItens = carrinho.length; // Obter o número de itens no carrinho
+        var numeroItens = carrinho.length;
 
-        // Atualizar o conteúdo do indicador com o número de itens
         $carrinhoBadge.text(numeroItens);
     } else {
-        // Se o carrinho não existir, definir o indicador como 0
         $carrinhoBadge.text('');
     }
 }
 
-// Atualizar o preço total do produto quando a quantidade muda
 $(document).on('change', '#quantidadeProduto', function () {
     const novaQuantidade = parseInt($(this).val(), 10);
     const qtdEstoque = parseInt($('#quantidadeProduto').attr('max'), 10);
@@ -553,9 +517,7 @@ $(document).on('change', '#quantidadeProduto', function () {
 });
 
 
-// Evento de clique no botão "Adicionar à Sacola"
 $(document).on('click', '#addToCartButton', function () {
-    // Obter detalhes do produto a partir do modal
 
     const productId = $('.qty').data('product-id');
     console.log(productId);
@@ -569,11 +531,8 @@ $(document).on('click', '#addToCartButton', function () {
         alert('A quantidade não pode ser maior que o estoque atual')
         return;
     }
-    // Verificar se o produto já está no carrinho
     const existingProductIndex = carrinho.findIndex(item => item.id === productId);
-    // Criar um objeto representando o produto
     if (existingProductIndex !== -1) {
-        // O produto já está no carrinho, atualize a quantidade
         carrinho[existingProductIndex].quantidade += productQuantity;
     } else {
         const produto = {
@@ -585,16 +544,12 @@ $(document).on('click', '#addToCartButton', function () {
             estoque: productEstoque
         };
         console.log(produto);
-        // Adicionar o produto ao carrinho
         carrinho.push(produto);
     }
 
-    // Salvar o carrinho na sessionStorage
     sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
 
-    // Atualizar a exibição da sacola na página
     atualizarExibicaoCarrinho();
-    // Após adicionar o produto ao carrinho com sucesso
     $('#productModal').modal('hide');
 
     $('#confirmacaoModal').modal('show');
@@ -607,16 +562,13 @@ $(document).on('click', '#addToCartButton', function () {
         atualizarExibicaoCarrinho();
     });
 
-    // Ouvinte de evento para o botão "Abrir Sacola" no modal de confirmação
     $('#abrirSacolaBtn').on('click', function () {
         $("input[name='opcaoEntrega']").prop("checked", false);
         $('#taxaEntrega').hide();
         $("#taxa-entrega").text('0.00');
         atualizarExibicaoCarrinho();
-        // Fechar o modal de confirmação
         $('#confirmacaoModal').modal('hide');
 
-        // Abrir o modal da sacola
         $('#sacolaModal').modal('show');
     });
 
@@ -625,36 +577,26 @@ $(document).on('click', '#addToCartButton', function () {
 function atualizarExibicaoCarrinho() {
     carrinho = JSON.parse(sessionStorage.getItem('carrinho'));
     if (!carrinho) {
-        // Se a sessionStorage estiver vazia, inicie um carrinho vazio
         carrinho = [];
     }
     atualizarIndicadorCarrinho();
-    // Seletor para a exibição da sacola
     const carrinhoSelector = '#sacolaLista';
 
     if (carrinho.length === 0) {
-        // Carrinho vazio, ocultar o botão "Continuar"
         $('#finalizarCompra').hide();
         $('#sacolaVazia').show();
     } else {
-        // Carrinho não está vazio, exibir o botão "Continuar"
         $('#finalizarCompra').show();
         $('#sacolaVazia').hide();
-        // Limpar a exibição da sacola
     }
 
-    //$(carrinhoSelector).empty();
 
     let total = 0;
-    //let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
 
-    // Iterar sobre os produtos no carrinho e atualizar a exibição
     carrinho.forEach((product, index) => {
-        // Verificar se o preço não é nulo
         const precoFormatado = product.preco !== null ? product.preco : 0;
         product.precoTotal = precoFormatado * product.quantidade;
 
-        // Crie um novo elemento de cartão Bootstrap para cada produto na sacola
         const produtoHTML = `
             <div class=" cardmb-1" id="produto-${product.id}" style="border:none; border-bottom: 1px solid rgba(0, 0, 0, .125); border-radius:0;">
                 <div class="card-body p-1">
@@ -691,18 +633,13 @@ function atualizarExibicaoCarrinho() {
         } else {
             $(carrinhoSelector).append(produtoHTML);
         }
-        // Adicione o produto à exibição da sacola
-        //$(carrinhoSelector).append(produtoHTML);
 
-        // Se o preço não for nulo, atualize o total
         if (product.preco !== null) {
             total += product.preco * product.quantidade;
         }
     });
 
-    //total += taxaEntrega;
-    $(".sacolaTotal").empty(); // Limpa o conteúdo existente
-    // Adicione o total à exibição da sacola
+    $(".sacolaTotal").empty();
     $(".sacolaTotal").append(`
 
                 <div class="btn btn-light disabled" disabled>
@@ -713,7 +650,6 @@ function atualizarExibicaoCarrinho() {
 
 atualizarExibicaoCarrinho();
 
-// Atualizar o preço total do produto quando a quantidade muda
 $(document).on('change', '.quantidade-produto', function () {
     const index = $(this).data('index');
     const novaQuantidade = parseInt($(this).val(), 10);
@@ -726,12 +662,10 @@ $(document).on('change', '.quantidade-produto', function () {
     if (novaQuantidade > 0) {
         carrinho[index].quantidade = novaQuantidade;
         sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
-        // Atualize a exibição da sacola
 
         atualizarExibicaoCarrinho();
     } else {
         const index = $(this).data('index');
-        // Adiciona uma confirmação antes de remover
         const confirmacao = confirm('Deseja realmente remover este produto do carrinho?');
 
         if (confirmacao) {
@@ -746,7 +680,6 @@ $(document).on('change', '.quantidade-produto', function () {
     }
 });
 
-// Delegação de eventos para os botões de "+" e "-"
 $(document).on('click', '.quantity .plus', function (e) {
     let $input = $(this).prev('input.qty');
     let val = parseInt($input.val());
@@ -763,10 +696,8 @@ $(document).on('click', '.quantity .minus', function (e) {
 
 
 
-// Evento de clique no botão "Remover" em um produto da sacola
 $(document).on('click', '.remover-produto', function () {
     const index = $(this).data('index');
-    // Adiciona uma confirmação antes de remover
     const confirmacao = confirm('Deseja realmente remover este produto do carrinho?');
     if (confirmacao) {
         const produtoRemover = $(`#sacolaLista #produto-${carrinho[index].id}`);
@@ -778,52 +709,37 @@ $(document).on('click', '.remover-produto', function () {
 
 });
 
-// Atualize a exibição da sacola na página ao carregá-la
 atualizarExibicaoCarrinho();
 
-
-
-//'http://localhost:3000/api/consultarcliente'
-
-// Evento de clique no botão "Finalizar Pedido"
 $(document).on('click', '#finalizarCompra', function () {
     if (!loja.OPERANDO_EMP) {
         $('#finalizarPedidoModal').modal('hide');
         alert('No momento não estamos aceitando pedidos pelo site.')
         return;
     }
-    // Abra a nova popup de finalização de pedido e formulário de cadastro
     $('#finalizarPedidoModal').modal('show');
     $('#telefone').val(formatTelefone(telefoneCliente));
     checkClienteByTelefone($('#telefone').val(), lojaID)
 });
 
 
-// Evento de clique no botão "Voltar"
 $(document).on('click', '#voltarSacola', function () {
-    // Abra a nova popup de finalização de pedido e formulário de cadastro
     $('#sacolaModal').modal('show');
 });
 
 
 
-// Quando o usuário digita no campo de telefone
 $('#telefone').on('input', function () {
     const telefone = $(this).val().replace(/\D/g, '');
 
-    // Verificar se o telefone tem 11 dígitos
     if (telefone.length === 11) {
-        // Faça a solicitação AJAX após a formatação
         checkClienteByTelefone($(this).val(), lojaID);
     }
 });
 
-// Variável para armazenar o ID do rádio selecionado
 var idRadioSelecionado = null;
-// Função para verificar o cliente com base no número de telefone
 function checkClienteByTelefone(telefone, id) {
 
-    // Mostrar o popup de carregamento
     document.getElementById("loadingPopup").style.display = "flex";
 
     $.ajax({
@@ -877,7 +793,6 @@ function checkClienteByTelefone(telefone, id) {
 
                 $('#nome').val(cliente[0].RAZAO_CLI);
 
-                // Função para formatar um endereço
                 function formatarEndereco(endereco) {
                     return `<p class='m-0' id='endereco_${endereco.ID_CLI_END}'><span class='endereco-salvo-rua'>${endereco.RUA_CLI_END},</span> n° <span class='endereco-salvo-numero'>${endereco.NUMERO_CLI_END}</span></p>
                     <p class='m-0'><span class='endereco-salvo-bairro' data-bairro-id="${endereco.ID_BAIRRO_CLI_END}">${endereco.NOME_BAIRRO.trim()}</span> - <span class='endereco-salvo-cidade'>${endereco.NOME_CID}</span></p>`;
@@ -888,7 +803,6 @@ function checkClienteByTelefone(telefone, id) {
                     var radioId = `enderecoRadio${index}`;
                     var taxaBairro = endereco.VR_FRETE_BAIRROQ;
 
-                    // Criar card de endereço
                     var labelCard = $(`
                         <label class="form-check-label m-1" for="${radioId}">
                             <div class="card">
@@ -904,12 +818,10 @@ function checkClienteByTelefone(telefone, id) {
                         </label>
                     `);
 
-                    // Criar opção de rádio
                     var radioOption = $(`<div class="endereco-card form-check form-check-inline"></div>`)
                         .append($(`<input class="form-check-input enderecoPadrao" type="radio" name="opcaoEndereco" id="${radioId}" data-id-endereco="${endereco.ID_CLI_END}" data-taxa-endereco="${taxaBairro}" value="enderecoSalvo">`))
                         .append(labelCard);
 
-                    // Adicionar opção de rádio e card à lista
                     $("#listaEnderecos").append(radioOption);
                 });
 
@@ -918,20 +830,17 @@ function checkClienteByTelefone(telefone, id) {
                 $("#listaEnderecos").append($(enderecoNovo));
 
             } else {
-                // Ocultar o card de endereço padrão
                 $('#enderecoPadraoCard').hide();
                 listaEnderecos.empty();
                 $("#listaEnderecos").append($(enderecoNovo));
 
             }
 
-            // Ocultar o popup de carregamento no sucesso da solicitação
             document.getElementById("loadingPopup").style.display = "none";
         },
         error: function (error) {
             console.log('Erro na solicitação AJAX: ' + error);
 
-            // Ocultar o popup de carregamento no sucesso da solicitação
             document.getElementById("loadingPopup").style.display = "none";
         }
     });
@@ -967,21 +876,16 @@ function popularBairros(bairros, id) {
         return bairro.ID_CIDADE_BAIRRO === idCidade;
     })
 
-    // Adicionar opções ao dropdown
     bairrosDaCidade.forEach(function (bairro) {
-        //dropdownBairros.append('<option value="' + bairro.ID_BAIRRO + '">' + bairro.NOME_BAIRRO.trim() + '</option>');
         dropdownBairros.append(`<option value= "${bairro.ID_BAIRRO}" data-nome-bairro="${bairro.NOME_BAIRRO.trim()}">${bairro.NOME_BAIRRO.trim()}</option>`)
     });
 
-    // Ao selecionar um bairro no dropdown
     dropdownBairros.on("change", function () {
         $("#dropdownBairros").removeClass("is-invalid");
 
         var selectedBairroId = $(this).val();
 
-        //$('#taxaEntrega').show();
 
-        // Encontrar o bairro selecionado nos dados originais para obter informações adicionais, se necessário
         var selectedBairro = bairros.find(function (bairro) {
             return bairro.ID_BAIRRO === parseInt(selectedBairroId);
         });
@@ -1001,21 +905,17 @@ function popularCidades(bairros) {
 
     var cidades = cidadesSemRepetir(bairros);
 
-    // Limpar dropdown e adicionar uma opção para selecionar
     dropdownCidades.empty();
     dropdownCidades.append('<option value="">Selecione uma cidade</option>');
 
 
-    // Adicionar as cidades ao dropdown
     cidades.forEach(function (cidade) {
         dropdownCidades.append('<option value="' + cidade.ID_CIDADE + '">' + cidade.NOME_CIDADE.trim() + '</option>');
     });
 
-    // Adicionar funcionalidade de pesquisa ao clicar no dropdown
     dropdownCidades.on('click', function () {
         $(this).find("option").show();
     });
-    // Ao selecionar uma cidade
     dropdownCidades.on("change", function () {
         var idCidade = $(this).val();
         listaBairros.hide();
@@ -1032,14 +932,11 @@ function formatTelefone(telefone) {
     if (telefone.length === 11) {
         numeroTelefone = telefone
     } else {
-        // Remover caracteres não numéricos (por exemplo, traços e espaços)
         numeroTelefone = $(telefone).val().replace(/\D/g, '');
     }
 
 
-    // Verifica se o número tem 11 dígitos
     if (numeroTelefone.length === 11) {
-        // Formata para (99) 9 9999-9999
         numeroTelefone = numeroTelefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
         $('#retirada').prop('disabled', false);
         $('#entrega').prop('disabled', false);
@@ -1050,7 +947,6 @@ function formatTelefone(telefone) {
         $("#retirada").prop("checked", true).change();
     }
 
-    // Atualiza o valor do campo de entrada com o número formatado
     telefone.value = numeroTelefone;
 
     return numeroTelefone;
@@ -1060,7 +956,6 @@ $(document).on('click', '#continuarEndereco', function () {
     const telefone = $('#telefone').val();
     const nome = $('#nome').val();
 
-    // Validação de telefone
     if (telefone.length !== 15) {
         alert("Telefone inválido. Deve conter 11 dígitos.");
         $("#telefone").addClass("is-invalid");
@@ -1069,7 +964,6 @@ $(document).on('click', '#continuarEndereco', function () {
         $("#telefone").removeClass("is-invalid");
     }
 
-    // Validação de nome
     if ($.trim(nome) === "") {
         alert("Nome é obrigatório.");
         $("#nome").addClass("is-invalid");
@@ -1086,7 +980,6 @@ $(document).on('click', '#continuarEndereco', function () {
     }
 
     popularCidades(bairrosEntrega);
-    // Abra a nova popup de finalização de pedido e formulário de cadastro
     if (!cliente) {
         checkClienteByTelefone($('#telefone').val(), lojaID);
     }
@@ -1096,12 +989,10 @@ $(document).on('click', '#continuarEndereco', function () {
 });
 
 $(document).on('click', '#continuarEndereco', function () {
-    // Abra a nova popup de finalização de pedido e formulário de cadastro
     $('#finalizarPedidoModal').modal('show');
 
 });
 
-// Quando a opção de entrega é alterada
 $('input[name="opcaoEntrega"]').on('change', function () {
     const opcaoSelecionada = $(this).val();
 
@@ -1112,22 +1003,16 @@ $('input[name="opcaoEntrega"]').on('change', function () {
         $('#taxaEntrega').hide();
         $("#taxa-entrega").text('0.00');
 
-        // Desmarcar qualquer opção radio que esteja marcada
         $("input[name='opcaoEndereco']:checked").prop("checked", false);
 
-        // Mostrar o card com o endereço da loja
         $('#lojaCard').show();
 
-        // Usar os dados da variável 'loja' para preencher o card
         const enderecoLoja = `${loja.RUA_EMP + ', ' + loja.NUMERO_EMP}<br>${loja.BAIRRO_EMP} - ${loja.NOME_CID}`
         $('#lojaEndereco').html(enderecoLoja);
         atualizarExibicaoCarrinho();
     } else if (opcaoSelecionada === 'entrega') {
-        // Ocultar o card quando a opção for entrega
         $('#lojaCard').hide();
         $('#opcoesEndereco').show();
-        //$("#taxa-entrega").text('0.00')//loja.VR_TAXA.toFixed(2));
-        //$('#taxaEntrega').show();
         atualizarExibicaoCarrinho();
     } else {
         $('#lojaCard').hide();
@@ -1135,30 +1020,16 @@ $('input[name="opcaoEntrega"]').on('change', function () {
     }
 });
 
-// Quando a opção de endereço é alterada
 $('#listaEnderecos').on('change', 'input[name="opcaoEndereco"]', function () {
 
     $('input[name="opcaoEntrega"][value="entrega"]').prop('checked', true);
     const opcaoSelecionada = $(this).val();
-    //var taxa = $(this).data('taxa-endereco');;
 
     if (opcaoSelecionada === 'enderecoSalvo') {
-        // Mostrar o card com o endereço da loja
         $('#enderecoCliente').hide();
-        // if (taxa != 0) {
-        //     $("#taxa-entrega").text(`R$ ${taxa.toFixed(2)}`)
-        // } else {
-        //     $("#taxa-entrega").text(`Grátis`)
-        // }
-        // $('#taxaEntrega').show();
-        //atualizarExibicaoCarrinho();
 
     } else if (opcaoSelecionada === 'enderecoNovo') {
-        // Ocultar o card quando a opção for entrega
         $('#enderecoCliente').show();
-        //$("#taxa-entrega").text('0.00')
-        //$('#taxaEntrega').hide();
-        //atualizarExibicaoCarrinho();
 
     } else {
         $('#lojaCard').hide();
@@ -1167,15 +1038,12 @@ $('#listaEnderecos').on('change', 'input[name="opcaoEndereco"]', function () {
     }
 });
 
-// Quando a forma de pagamento é alterada
 $('#formaPagamento').on('change', function () {
     const formaPagamentoSelecionada = $(this).val();
 
     if (formaPagamentoSelecionada === '1') {
-        // Se a forma de pagamento for "Dinheiro," mostrar o campo "Troco para quanto?"
         $('#trocoDiv').show();
     } else {
-        // Se outra forma de pagamento for selecionada, esconder o campo "Troco para quanto?"
         $('#trocoDiv').hide();
         $('#troco').val('');
     }
@@ -1194,13 +1062,11 @@ function obterIdBairroPorNome(nomeBairro, bairros) {
 
 $('#continuarPagamento').click(async function () {
 
-    // Recupere as informações do modal de dados pessoais
     const telefone = $('#telefone').val();
     const nome = $('#nome').val();
     const clienteID = cliente.length === 0 ? null : cliente[0].ID_CLI;
     const escolhaEntrega = $('input[name=opcaoEntrega]:checked').val() === 'entrega' ? 1 : 0;
     const escolhaEndereco = $('input[name=opcaoEndereco]:checked').val() === 'enderecoSalvo' ? 1 : 0;
-    //const taxa = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
     const rua = escolhaEntrega == 1 ? $('#rua').val() : loja.RUA_EMP;
     const numero = escolhaEntrega == 1 ? $('#numero').val() : loja.NUMERO_EMP;
     const complemento = $('#complemento').val();
@@ -1209,14 +1075,12 @@ $('#continuarPagamento').click(async function () {
     const endereco = $('input[name=opcaoEndereco]:checked').data('id-endereco') || null;
     let taxa = 0;
 
-    // Validação de entrega ou retirada
     const opcaoEntrega = $('input[name="opcaoEntrega"]:checked');
     if (!opcaoEntrega.length) {
         alert("Selecione uma opção de entrega ou retirada.");
         return;
     }
 
-    // Validação de endereço, se a entrega for escolhida
     if (opcaoEntrega.val() === "entrega") {
         let rua;
         let numero;
@@ -1230,7 +1094,6 @@ $('#continuarPagamento').click(async function () {
             return;
         }
 
-        // Validação do novo endereço, se selecionado
         if (opcaoEndereco.val() === "enderecoNovo") {
             bairroID = $("#dropdownBairros").val();
             dadosBairro = dadosBairroSelecionado(bairroID);
@@ -1283,12 +1146,10 @@ $('#continuarPagamento').click(async function () {
                 taxa = parseFloat(dadosBairro[0].VR_FRETE_BAIRROQ);
             }
 
-            // let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
             let subTotal = parseFloat($('#total-carrinho')[0].innerText);
             let total = taxa + subTotal;
 
-            $(".sacolaTotal").empty(); // Limpa o conteúdo existente
-            // Adicione o total à exibição da sacola
+            $(".sacolaTotal").empty();
             $(".sacolaTotal").append(`
 
                 <div class="btn btn-light disabled" style="text-align:left;" disabled>
@@ -1299,7 +1160,6 @@ $('#continuarPagamento').click(async function () {
             `);
 
         } catch (error) {
-            // Tratamento de erro
             console.error("Erro ao obter frete:", error);
             document.getElementById("loadingPopup").style.display = "none";
             return;
@@ -1307,7 +1167,6 @@ $('#continuarPagamento').click(async function () {
 
     }
 
-    // Crie um objeto com as informações
     const dadosCliente = {
         clienteID,
         telefone,
@@ -1315,14 +1174,13 @@ $('#continuarPagamento').click(async function () {
         escolhaEntrega,
         escolhaEndereco,
         taxa,
-        rua, // Use o endereço do cadastro se for entrega e endereço padrão
+        rua,
         numero,
         complemento,
         bairro,
         cidade,
         endereco
     };
-    // Salve o objeto no sessionStorage
     sessionStorage.setItem('dadosCliente', JSON.stringify(dadosCliente));
 
     $('#enderecoPedidoModal').modal('hide');
@@ -1339,7 +1197,6 @@ async function getUfByAddress(street, number, neighborhood, city) {
         method: 'GET'
     }).then(function (response) {
         if (response.length > 0) {
-            // Analisa a resposta para encontrar a UF
             var display_name = response[0].display_name;
             var addressParts = display_name.split(', ');
             uf = addressParts[addressParts.length - 4];
@@ -1379,14 +1236,12 @@ $('#confirmarPedido').click(function (e) {
         return;
     }
 
-    // Verifique se uma forma de pagamento foi selecionada
     const formaPagamento = $('#formaPagamento').val();
     if (!formaPagamento) {
         alert('Por favor, selecione uma forma de pagamento.');
         return;
     }
 
-    // Se a forma de pagamento for "dinheiro", verifique se o campo "troco" está preenchido
     if (formaPagamento === '1') {
         const troco = parseFloat($('#troco').val());
         const total = parseFloat($('#total-carrinho')[0].innerText);
@@ -1403,9 +1258,6 @@ $('#confirmarPedido').click(function (e) {
     }
 
     document.getElementById("loadingPopup").style.display = "flex";
-    // Se todas as verificações passarem, prossiga com a confirmação do pedido
-    //enviarPedidoAPI();
-    //$('#escolherPagamentoModal').modal('hide');
     verificarEstoqueEChecarPedido();
 
 });
@@ -1419,24 +1271,20 @@ async function getFrete(IdEmp, RetornaEmpresa, EnderecoDestino, NumeroDestino, c
             type: 'GET'
         });
         console.log("API Response:", response);
-        return response; // Retorna a resposta para uso posterior
+        return response;
     } catch (error) {
         console.error("Erro na chamada da API:", error);
-        throw error; // Propaga o erro para ser tratado externamente
+        throw error;
     }
 }
 
 function enviarPedidoAPI() {
-    // Obtenha os dados do carrinho e dados do cliente da sessionStorage
-    //const carrinho = JSON.parse(sessionStorage.getItem('carrinho'));
     const dadosCliente = JSON.parse(sessionStorage.getItem('dadosCliente'));
-    // Obtenha os dados do modal de pagamento
     const precoTotal = parseFloat($('#total-carrinho').text()) - dadosCliente.taxa;
     const formaPagamento = $('#formaPagamento').val();
     const troco = $('#troco').val();
     const observacao = $('#observacao').val();
 
-    // Construa um objeto que contenha todos os dados a serem enviados para a API
     let dadosParaEnviar = {
         carrinho,
         dadosCliente,
@@ -1451,18 +1299,16 @@ function enviarPedidoAPI() {
 
     $.ajax({
         url: `https://${loja_ddns}/api/confirmarpedido`,
-        method: 'POST', // Ou o método adequado para a sua API
+        method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(dadosParaEnviar),
         success: function (response) {
-            // A solicitação foi bem-sucedida
             if (response.confirmado) {
                 document.getElementById("loadingPopup").style.display = "none";
                 sessionStorage.removeItem('carrinho');
                 dadosParaEnviar = [];
                 cliente = undefined;
                 atualizarExibicaoCarrinho();
-                // Faça qualquer outra ação necessária após a confirmação
                 alert('Pedido enviado com sucesso! Você receberá atualizações sobre seu pedido pelo WhatsaApp informado');
                 location.reload();
             } else {
@@ -1552,9 +1398,8 @@ const checkStatus = async () => {
             }
         }
     } catch (error) {
-        console.error('Error:', error); alert('Erro ao buscar status da loja. Recarregue a página por favor.');
+        console.error('Error:', error); //alert('Erro ao buscar status da loja. Recarregue a página por favor.');
         location.reload();
-        //$('#status-result').text('Erro ao buscar status da loja. Recarregue a página por favor.');
     }
 };
 
@@ -1565,6 +1410,6 @@ function dadosBairroSelecionado(id) {
     return dadosBairro;
 }
 
-setInterval(checkStatus, 5000);
+setInterval(checkStatus, 10000);
 
 checkStatus();
