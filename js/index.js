@@ -94,18 +94,18 @@ function createPage(produtos, categorias) {
                         <div class="sidebar-header text-center py-1">
                             <img src="/fotos/${lojaCpfCnpj}/logo/logo_web.png" onerror="this.src='assets/png/placeholder_logo.png'" id="logoLoja" alt="Logotipo da Loja" class="img-fluid rounded-circle"
                                 style="max-width: 140px;">
-                            <p class="small pt-2" style="color:#dc1a1a;"><strong>Pedido Mínimo:</strong> R$ ${parseFloat(pedidoMin, 10).toFixed(2)}</p>    
+                            <p class="small pt-2" style="color:#28a745; font-size: 0.9rem; font-weight:500;">Pedido Mínimo:<strong> R$ ${parseFloat(pedidoMin, 10).toFixed(2)}</strong></p>    
                         </div>
                         
                         <div class="sidebar-scroll">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><button type="button" class="btn btn-outline-dark btn-sm categoria-btn ver-todos" style="width: 98%; font-weight: 500;">Ver Todos</button></li>
+                                <li class="nav-item"><button type="button" class="btn btn-outline-secondary btn-sm categoria-btn ver-todos" style="width: 98%; font-weight: 500;">Ver Todos</button></li>
                                 ${categorias.map(categoria => {
         var nomeFormatado = primeiraLetraMaiuscula(categoria.GRUP_DESCRICAO);
         const produtosCategoria = produtos.filter(produto => produto.GRUP_DESCRICAO === categoria.GRUP_DESCRICAO);
         if (produtosCategoria.length > 0) {
             return `<li class="nav-item">
-                                                    <button type="button" class="btn btn-outline-dark btn-sm categoria-btn ver-categoria" style="width: 98%; font-weight: 500;" data-categoria="${categoria.GRUP_DESCRICAO}">
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm categoria-btn ver-categoria" style="width: 98%; font-weight: 500;" data-categoria="${categoria.GRUP_DESCRICAO}">
                                                         <a class="nav-link categoria-item ver-categoria" data-categoria="${categoria.GRUP_DESCRICAO}">${nomeFormatado.trim()}</a>
                                                     </button>
                                                 </li>`;
@@ -152,13 +152,12 @@ function addInitialProducts(produtos, categorias) {
                         <div id="${nomeFormatado.trim()}" class="row categoria-titulo container-fluid">
                             <h3 id="categoria-${categoria.ID_GRUPO}">${nomeFormatado.trim()}</h3>
                             <div class="ver-mais-top text-center d-flex" >
-                            <button class="btn btn-link btn-sm ver-mais" data-categoria="${categoria.GRUP_DESCRICAO}" style="float:left; border:none; font-weight:500; color:red">Ver todos</button>
+                            <button class="btn btn-link btn-sm ver-mais" data-categoria="${categoria.GRUP_DESCRICAO}" style="float:left; border:none; font-weight:600; font-size: 1rem; color:#28a745">Ver todos</button>
                         </div>
                         </div>
+                        <section class="products__container" style="--items-quantity: 10;">
                         ${produtosCategoria.map(createProductCard).join('')}
-                        <div class="text-center ver-mais-bottom" style="width: 100%; ">
-                            <button class="btn btn-link btn-sm ver-mais" data-categoria="${categoria.GRUP_DESCRICAO}" style="float:left; border:none; font-weight:500; color:red;">Ver todos</button>
-                        </div>
+                        </section>
                     `;
         }
         return ''; // Não renderiza a categoria se não houver produtos
@@ -177,25 +176,21 @@ function createProductCard(produto) {
     let imgOnError = "/assets/jpg/placeholder_thumb.jpg";
 
     var nomeFormatado = primeiraLetraMaiuscula(produto.NOME_PROD)
+
     return `
-        <div class="product-card col-sm-6 col-md-6 col-lg-4 col-xl-3 p-1" id="product-${produto.ID_PROD}" data-product-id="${produto.ID_PROD}">
-        <!-- Conteúdo do product-card aqui -->
-            <div class="card shadow-sm" style="height:100px;">
-                <div class="row no-gutters">
-                    <div class="col-4 p-2 " style="height: 100px;">
-                        <img src="/fotos/${lojaCpfCnpj}/${produto.ID_PROD}/${produto.ID_PROD}_0_thumb.jpg" loading="lazy" onerror="this.src='${imgOnError}'" class="card-img rounded" alt="COD-${produto.ID_PROD}">
-                    </div>
-                    <div class="col-8 card-body p-0 m-0" bis_skin_checked="1">
-                        <div class="row p-0 pr-2 m-0" bis_skin_checked="1" style="height:55px;">
-                            <h5 class="card-title small texto-cortado text-right m-0 p-1 pt-2" style="width:100%;">${nomeFormatado.trim()}</h5>
-                        </div>
-                        <div class="row d-flex align-items-end m-1 justify-content-around mt-2" bis_skin_checked="1">
-                            <p class="card-text m-0 p-0 pt-2 preco-card small" style="color: black; float:right;"><strong>R$ </strong><strong>${produto.VR_VENDA3_ESTOQUE.toFixed(2)}</strong></p>
-                            <button type="button" class="btn btn-primary btn-sm p-1 btn-comprar" style="border-radius:5px;">
-                                Comprar
-                            </button>                            
-                        </div>
-                    </div>
+        <div class="product-card-box"> 
+            <div class="product-card" id="product-${produto.ID_PROD}" data-product-id="${produto.ID_PROD}">
+                <div class="product-image">
+                    <span>
+                        <div class="product-card-image__overlay"></div>
+                        <img src="/fotos/${lojaCpfCnpj}/${produto.ID_PROD}/${produto.ID_PROD}_0_thumb.jpg" loading="lazy" onerror="this.src='${imgOnError}'" alt="COD-${produto.ID_PROD}">
+                    </span>
+                    <button class="add-to-cart-btn">✚</button>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">${nomeFormatado.trim()}</div>
+                    <div class="product-description">Short description</div>
+                    <div class="product-price">R$ ${produto.VR_VENDA3_ESTOQUE.toFixed(2)}</div>
                 </div>
             </div>
         </div>
@@ -209,7 +204,7 @@ function addMoreProducts(categoria) {
     var contentElement = document.getElementById('loja-container-main');
     contentElement.classList.add('slide-right');
     var btnVoltar = `<div class="text-center mt-2" style="width: 100%;">
-                        <button class="btn btn-link btn-sm voltar-todos" style="float:left;border:none; font-weight:500; color:red;">◁ Voltar</button>
+                        <button class="btn btn-link btn-sm voltar-todos" style="float:left;border:none;font-size: 1rem; font-weight:600; color:#28a745;">◁ Voltar</button>
                     </div> `
     var categoriaElement = `<div id="${categoria}" class="row categoria-titulo container-fluid" style="margin-top:5px;">
                                 <h3 style="width: 100%;"}">${primeiraLetraMaiuscula(categoria)}</h3>
@@ -220,8 +215,11 @@ function addMoreProducts(categoria) {
     categoriaElement = document.getElementById(`${categoria}`);
     var produtosCategoria = produtos.filter(produto => produto.GRUP_DESCRICAO === categoria); // Produtos além dos primeiros 8
     contentElement.innerHTML += produtosCategoria.map(createProductCard).join('');
-    contentElement.innerHTML += btnVoltar;
-    // Adiciona classe para animação de movimento para a esquerda
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach(card => {
+        card.style.marginRight = '25px';
+    });
+
     contentElement.classList.add('slide-left');
     setTimeout(function () {
         contentElement.classList.remove('slide-right');
@@ -251,7 +249,12 @@ document.addEventListener('click', function (event) {
 
 // Evento de clique no botão "Voltar"
 document.addEventListener('click', function (event) {
-    if (event.target.classList.contains('ver-todos') || event.target.classList.contains('voltar-todos')) {
+    const voltarTodosBtn = $('.voltar-todos');
+    if (voltarTodosBtn.length == 0) {
+        mainSection.scrollTop = 0;
+        sidebarScroll.scrollTop = 0;
+
+    } else if (event.target.classList.contains('ver-todos') || event.target.classList.contains('voltar-todos')) {
         backToInitialView();
     }
 });
@@ -341,31 +344,11 @@ function openProductPopup(product) {
             qtdCarrinho = carrinho[existingProductIndex].quantidade;
         }
     }
-
-    // Preencha a popup com os dados do produto
     $(popupSelector).find('.modal-title').text(product.NOME_PROD);
 
-    // Clear the carousel inner content
+
     $('#carouselInner').empty();
 
-    // Adicione as imagens ao carousel
-    // let images = [
-    //     `${product.ID_PROD}_0_web.jpg`,
-    //     `${product.ID_PROD}_1.jpg`,
-    //     `${product.ID_PROD}_2.jpg`,
-    //     `${product.ID_PROD}_3.jpg`
-    //     // Adicione mais imagens conforme necessário
-    // ];
-
-    // images.forEach((image, index) => {
-    //     let activeClass = index === 0 ? 'active' : '';
-    //     let imgElement = `
-    //         <div class="carousel-item ${activeClass}">
-    //             <img src="/fotos/${lojaCpfCnpj}/${product.ID_PROD}/${image}" alt="${product.NOME_PROD}" class="d-block w-100" onerror="handleImageError(this, ${index})">
-    //         </div>
-    //     `;
-    //     $('#carouselInner').append(imgElement);
-    // });
 
     loadCarouselImages(product.ID_PROD, lojaCpfCnpj);
 
@@ -377,7 +360,7 @@ function openProductPopup(product) {
             <label for="quantidade">Quantidade:</label>        
             <form class="quantity ml-2">
                 <input type="button" value="━" data-index="0" class="btn-outline-danger qtyminus minus p-0 m-0" field="quantity" style="width: 25px">
-                <input type="number" id="quantidadeProduto" name="quantidade" value="1" min="1" max="${product.QTD_ATUAL_ESTOQUE - qtdCarrinho}" data-index="0" class="qty p-0 m-0" data-product-id="${product.ID_PROD}">
+                <input type="number" id="quantidadeProduto" name="quantidade" value="1" min="0" max="${product.QTD_ATUAL_ESTOQUE - qtdCarrinho}" data-index="0" class="qty p-0 m-0" data-product-id="${product.ID_PROD}">
                 <input type="button" value="✚" data-index="0" class="btn-outline-primary qtyplus plus p-0 m-0" field="quantity" style="width: 25px">
             </form>
         </div>
@@ -389,6 +372,14 @@ function openProductPopup(product) {
         $('#qtdCarrinho').show();
     }
     // Abra a popup
+    if (product.QTD_ATUAL_ESTOQUE - qtdCarrinho == 0) {
+        $('#addToCartButton').attr('disabled', true);
+        $('#quantidadeProduto').val('0')
+    } else {
+        $('#addToCartButton').attr('disabled', false);
+
+    }
+
     $(popupSelector).modal('show');
 }
 
@@ -652,7 +643,7 @@ function atualizarExibicaoCarrinho() {
         // Limpar a exibição da sacola
     }
 
-    $(carrinhoSelector).empty();
+    //$(carrinhoSelector).empty();
 
     let total = 0;
     //let taxaEntrega = parseFloat($('#taxa-entrega').text().replace('R$ ', '')) || 0;
@@ -665,7 +656,7 @@ function atualizarExibicaoCarrinho() {
 
         // Crie um novo elemento de cartão Bootstrap para cada produto na sacola
         const produtoHTML = `
-            <div class="card mb-1" style="border:none; border-bottom: 1px solid rgba(0, 0, 0, .125); border-radius:0;">
+            <div class=" cardmb-1" id="produto-${product.id}" style="border:none; border-bottom: 1px solid rgba(0, 0, 0, .125); border-radius:0;">
                 <div class="card-body p-1">
                     <div class="row">
                         <div class="col-0 col-sm-2 col-md-2 d-none d-sm-block">
@@ -685,7 +676,7 @@ function atualizarExibicaoCarrinho() {
                             <span class="preco-produto small">R$ ${product.precoTotal.toFixed(2)}</span>
                         </div>
                         <div class="col-1 col-md-2 p-1 align-self-center">                        
-                            <button class="btn px-2 py-0 m-0 remover-produto" data-index="0">
+                            <button class="btn px-2 py-0 m-0 remover-produto" data-index="${index}">
                                 <i class="fa fa-trash" style="color: crimson; position:inherit"></i>
                             </button>                                            
                         </div>
@@ -694,8 +685,14 @@ function atualizarExibicaoCarrinho() {
             </div>
         `;
 
+        const existingProduct = $(`${carrinhoSelector} #produto-${product.id}`);
+        if (existingProduct.length) {
+            existingProduct.replaceWith(produtoHTML);
+        } else {
+            $(carrinhoSelector).append(produtoHTML);
+        }
         // Adicione o produto à exibição da sacola
-        $(carrinhoSelector).append(produtoHTML);
+        //$(carrinhoSelector).append(produtoHTML);
 
         // Se o preço não for nulo, atualize o total
         if (product.preco !== null) {
@@ -714,7 +711,6 @@ function atualizarExibicaoCarrinho() {
     `);
 }
 
-// Chame a função para inicializar a exibição da sacola
 atualizarExibicaoCarrinho();
 
 // Atualizar o preço total do produto quando a quantidade muda
@@ -731,6 +727,7 @@ $(document).on('change', '.quantidade-produto', function () {
         carrinho[index].quantidade = novaQuantidade;
         sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
         // Atualize a exibição da sacola
+
         atualizarExibicaoCarrinho();
     } else {
         const index = $(this).data('index');
@@ -738,11 +735,10 @@ $(document).on('change', '.quantidade-produto', function () {
         const confirmacao = confirm('Deseja realmente remover este produto do carrinho?');
 
         if (confirmacao) {
-            // Remova o produto do carrinho com base no índice
+            const produtoRemover = $(`#sacolaLista #produto-${carrinho[index].id}`);
             carrinho.splice(index, 1);
-            // Salve o carrinho atualizado na sessionStorage
             sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
-            // Atualize a exibição da sacola
+            produtoRemover.remove();
             atualizarExibicaoCarrinho();
         } else {
             $(this).val(1);
@@ -772,13 +768,11 @@ $(document).on('click', '.remover-produto', function () {
     const index = $(this).data('index');
     // Adiciona uma confirmação antes de remover
     const confirmacao = confirm('Deseja realmente remover este produto do carrinho?');
-
     if (confirmacao) {
-        // Remova o produto do carrinho com base no índice
+        const produtoRemover = $(`#sacolaLista #produto-${carrinho[index].id}`);
         carrinho.splice(index, 1);
-        // Salve o carrinho atualizado na sessionStorage
         sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
-        // Atualize a exibição da sacola
+        produtoRemover.remove();
         atualizarExibicaoCarrinho();
     }
 
@@ -1297,8 +1291,8 @@ $('#continuarPagamento').click(async function () {
             // Adicione o total à exibição da sacola
             $(".sacolaTotal").append(`
 
-                <div class="btn btn-light disabled" style="text-align:right;" disabled>
-                    <p class="m-1">Sub-Total: R$ <span>${subTotal.toFixed(2)}</span></p>
+                <div class="btn btn-light disabled" style="text-align:left;" disabled>
+                    <p class="m-1">Produtos: R$ <span>${subTotal.toFixed(2)}</span></p>
                     <p class="m-1">Entrega: R$ <span>${taxa.toFixed(2)}</span></p>
                     <p class="m-1"><strong>Total: R$ <span id="total-carrinho">${total.toFixed(2)}</span></strong></p>
                 </div>

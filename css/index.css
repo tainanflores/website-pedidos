@@ -1,6 +1,7 @@
 * {
-    font-family: "Roboto", "Arial", sans-serif;
-    /* Substitua "Arial" pela fonte desejada */
+    font-family: "Exo", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
 html {
@@ -8,7 +9,7 @@ html {
 }
 
 body {
-    background-color: #f1f1f1;
+    background-color: #ffffff;
     overflow: hidden;
 }
 
@@ -45,28 +46,27 @@ h5 {
     transform: translate(0px, -8px);
 }
 
-.conteudo img {
+/* .conteudo img {
     border-radius: 20px;
     width: 122px;
     height: 122px;
     text-align: center;
     margin: 0 auto;
     display: block;
-}
+} */
 
-.conteudo p {
+/* .conteudo p {
     text-align: center;
     color: #b2bec3;
     padding-top: 0 8px;
-}
+} */
 
 /* Cabeçalho com position: fixed */
 header {
     left: 25px;
     margin-left: 0px;
     width: 90%;
-    /* Preenche a largura da janela */
-    background-color: #f1f1f1;
+    background-color: #ffffff;
     z-index: 90;
 }
 
@@ -86,15 +86,12 @@ header.active {
     align-items: center;
     padding: 10px;
     max-width: 720x;
-    /* Largura máxima desejada */
     margin: 0 auto;
-    /* Centraliza horizontalmente */
 }
 
 /* Campo de pesquisa */
 .search-input {
     flex: 1;
-    /* Cresce para ocupar o espaço disponível */
     margin-right: 10px;
 }
 
@@ -108,18 +105,15 @@ header.active {
 .cart-icon {
     padding-top: 5px;
     flex-shrink: 0;
-    /* Não encolhe */
 }
 
 main {
-    /* scroll-behavior: smooth; */
     overflow-y: auto;
-    /* Adiciona uma barra de rolagem vertical apenas quando necessário */
     max-height: calc(90vh - 60px);
-    /* Ajuste a altura conforme necessário, considerando a altura do seu header */
-    margin-left: 24px;
+    /* margin-left: 24px; */
+
     transition: left 0.3s;
-    background-color: #f1f1f1;
+    background-color: #ffffff;
 }
 
 main.active {
@@ -129,36 +123,27 @@ main.active {
 /* Estilo personalizado para a barra de rolagem do elemento main */
 main::-webkit-scrollbar {
     width: 8px;
-    /* Largura da barra de rolagem */
 }
 
 /* Estilo da alça da barra de rolagem do elemento main */
 main::-webkit-scrollbar-thumb {
     background-color: #f1f1f1;
-    /* Cor da alça da barra de rolagem */
     border-radius: 4px;
-    /* Borda arredondada da alça da barra de rolagem */
 }
 
 /* Estilo do fundo da barra de rolagem do elemento main */
 main::-webkit-scrollbar-track {
     background-color: #f1f1f1;
-    /* Cor de fundo da barra de rolagem */
 }
 
 .rounded-circle {
-    /* border: 2px solid#a1a1a1; */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 /* Barra lateral */
 #sidebar {
-    /* display: none; */
-    /* Outros estilos da sidebar aqui */
     position: fixed;
-    /* Garante que a altura seja relativa ao elemento pai */
     height: 100%;
-    /* Ajusta a altura da sidebar para 100% do elemento pai */
     width: 220px;
     top: 0;
     left: -220px;
@@ -166,7 +151,6 @@ main::-webkit-scrollbar-track {
     background-color: #343a40;
     color: white;
     border-top-right-radius: 10px;
-    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
     z-index: 98;
 }
 
@@ -192,7 +176,6 @@ main::-webkit-scrollbar-track {
 #sidebar ul.nav.flex-column .nav-item {
     padding: 0;
     margin-bottom: 4px;
-    /* border-bottom: 1px solid #ccc; */
     padding-bottom: 4px;
     max-height: 31px;
     text-overflow: ellipsis;
@@ -217,35 +200,27 @@ main::-webkit-scrollbar-track {
 /* Estilo para a barra de rolagem da barra lateral */
 .sidebar-scroll {
     max-height: calc(95vh - 150px);
-    /* Ajusta a altura máxima para o espaço disponível, subtraindo a altura do header */
-    /* Altura máxima da barra lateral */
     overflow-y: auto;
-    /* Adicionar barra de rolagem vertical quando necessário */
 }
 
 /* Estilo personalizado para a barra de rolagem */
 .sidebar-scroll::-webkit-scrollbar {
     width: 6px;
-    /* Largura da barra de rolagem */
 }
 
 /* Estilo da alça da barra de rolagem */
 .sidebar-scroll::-webkit-scrollbar-thumb {
     background-color: #d2d2d2;
-    /* Cor da alça da barra de rolagem */
     border-radius: 4px;
-    /* Borda arredondada da alça da barra de rolagem */
 }
 
 /* Estilo do fundo da barra de rolagem */
 .sidebar-scroll::-webkit-scrollbar-track {
     background-color: inherit;
-    /* Cor de fundo da barra de rolagem */
 }
 
 /* Botão de alternância da barra lateral */
 .toggle-button {
-    /* background-color: #6c757d; */
     position: fixed;
     top: 7px;
     left: 5px;
@@ -261,28 +236,185 @@ main::-webkit-scrollbar-track {
 }
 
 .toggle-button.active {
-    /* background-color: #6c757d; */
     left: 170px;
 }
 
-/* Conteúdo */
 .content {
-    background-color: #f1f1f1;
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
 }
 
 .content h1 {
     margin-bottom: 20px;
 }
 
-.card {
+
+/* Style for new product card */
+/* ----------------------------------- */
+.products__container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+    grid-auto-flow: column;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    /* white-space: nowrap; */
+    padding: 10px;
+    gap: 15px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.product-card-box {
+    height: 230px;
+}
+
+.product-card {
+    scroll-snap-align: start;
+    width: 126px;
+    height: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    position: relative;
+    /* display: inline-block; */
+    transition: margin-right 0.3s ease;
+}
+
+.product-image {
+    width: 100%;
+    height: 125px;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.product-image span {
+    /* width: 100px;
+    height: 100px; */
+    display: block;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-card-image__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: rgba(69, 71, 69, 0.1);
+    pointer-events: none;
+}
+
+.product-info {
+    /* padding-top: 10px; */
+    text-align: left;
+    height: 95px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.product-name {
+    color: #444;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+    max-height: 2.4em;
+    /* Limita a altura a duas linhas */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Mostra até 2 linhas */
+    -webkit-box-orient: vertical;
+}
+
+.product-price {
+    font-size: 16px;
+    color: #555;
+    font-weight: bolder;
+    margin: 0;
+}
+
+.product-description {
+    font-size: 12px;
+    color: #868686;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.add-to-cart-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.add-to-cart-btn {
+    z-index: 1;
+}
+
+@media only screen and (max-width: 768px) {
+    .products__container {
+        overflow-x: auto;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .product-card-box {
+        margin-right: 10px;
+    }
+
+    .product-card {
+        margin: 0 !important;
+        width: 100px;
+        height: 200px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100px;
+        padding: 5px;
+    }
+
+}
+
+/* ------------------------------------- */
+/* End of Style for new product card */
+
+/* .card {
     margin-bottom: 0;
     max-width: 100%;
     max-height: 100%;
     border-radius: 0.5rem;
-}
+} */
 
 .is-hidden {
     display: none;
@@ -299,7 +431,7 @@ main::-webkit-scrollbar-track {
     /* width: 100%; */
     justify-content: space-between;
     margin-top: 30px;
-    padding-left: 10px;
+    padding-left: 30px;
     font-size: 20px;
     /* Tamanho da fonte */
     font-weight: bold;
@@ -329,18 +461,15 @@ main::-webkit-scrollbar-track {
     display: none;
 }
 
-/* Estilo para a classe preco-card no canto inferior direito */
-.preco-card {
-    /* position: absolute; */
+/* .preco-card {
     bottom: 0;
     left: 0;
     margin: 10px;
-    /* Adicione margem para espaçamento */
 }
 
 .btn-comprar {
     font-size: 0.7rem;
-}
+} */
 
 .footer-icon {
     max-width: 30px;
@@ -357,7 +486,7 @@ main::-webkit-scrollbar-track {
     }
 
     main {
-        margin-left: 250px;
+        margin-left: 200px;
     }
 
     #productModal .modal-dialog {
@@ -366,9 +495,15 @@ main::-webkit-scrollbar-track {
 }
 
 @media screen and (max-width: 480px) {
+
+    header {
+        width: 100%;
+    }
+
     main {
         margin: 5px;
-        padding: 2px;
+        padding-left: 10px !important;
+        padding-right: 0 !important;
     }
 
     .content {
@@ -388,6 +523,26 @@ main::-webkit-scrollbar-track {
         display: contents;
         max-width: fit-content;
     }
+
+    .modal-body {
+        /* max-height: 400px; */
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .space-evenly {
+        justify-content: space-evenly !important;
+    }
+
+    .modal-content {
+        height: 100%;
+    }
+
+
 }
 
 /* Estilo para a descrição do produto no modal com quebra de linha automática */
@@ -436,7 +591,7 @@ main::-webkit-scrollbar-track {
 /* Estilo para o título do modal */
 .modal-title {
     text-align: center;
-    background-color: #6c757d;
+    /* background-color: #6c7d71; */
     /* Cor de fundo cinza */
     color: white;
     /* Cor do texto */
@@ -471,6 +626,7 @@ main::-webkit-scrollbar-track {
 }
 
 #sacolaModal {
+    height: 100%;
     overflow-y: hidden;
     /* Oculta a barra de rolagem na janela toda */
 }
@@ -480,11 +636,14 @@ main::-webkit-scrollbar-track {
 }
 
 #confirmacaoModal {
+    top: 200px;
     justify-self: center;
+    height: 100%;
 }
 
 #confirmacaoModalContent {
     max-width: 200px;
+    border-radius: 10px;
 }
 
 .botoes-modal-vertical {
@@ -494,11 +653,10 @@ main::-webkit-scrollbar-track {
 }
 
 .modal-body {
-    max-height: 400px;
-    /* Defina a altura máxima da sacola conforme necessário */
+    /* max-height: 400px; */
     overflow-y: auto;
+    overflow-x: hidden;
     padding-bottom: 0;
-    /* Adiciona uma barra de rolagem somente dentro da sacola */
 }
 
 .total-sacola {
@@ -513,7 +671,8 @@ main::-webkit-scrollbar-track {
     bottom: 0;
     background-color: #fff;
     padding: 10px;
-    border-top: 1px solid #ddd;
+    border-top: none;
+    border-radius: 10px;
     /* justify-content: space-between; */
 }
 
@@ -522,7 +681,6 @@ main::-webkit-scrollbar-track {
     bottom: 0;
     background-color: #fff;
     padding: 10px;
-    border-top: 1px solid #ddd;
     justify-content: space-around;
 }
 
@@ -697,185 +855,4 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-
-
-/* --------------------------------------------------------------------------- */
-/* ----------------------Novo Estilo de produtos------------------------------ */
-/* --------------------------------------------------------------------------- */
-
-.produtos-categoria-secao {
-    padding-bottom: 10px;
-}
-
-produtos-categoria-secao__categoria {
-    font-weight: 500;
-    font-size: rem(20);
-    line-height: rem(24);
-    letter-spacing: -1;
-    padding-bottom: 10px;
-    margin: 0;
-    color: black;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-produtos-categoria-secao__ver-todos {
-    white-space: nowrap;
-    font-size: rem(16);
-    line-height: rem(18);
-    color: crimson;
-    text-decoration: none;
-
-    &:hover {
-        opacity: 0.9;
-    }
-
-    &:active {
-        opacity: 0.8;
-    }
-}
-
-produtos-categoria-secao__produtos-grid {
-    display: grid;
-    column-gap: 10px;
-    grid-template-columns: repeat(10, minmax(122px, 1fr));
-
-    &--all {
-        display: flex;
-        flex-flow: row wrap;
-        column-gap: 30px;
-        row-gap: 30px;
-    }
-}
-
-
-.product-card-new {
-    position: relative;
-    width: 122px;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.product-card-new .adicionar-rapido-carrinho {
-    position: absolute;
-    display: flex;
-    top: 74px;
-    right: 8px;
-}
-
-.product-card-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100px;
-    align-items: flex-start;
-    gap: 6px;
-}
-
-.product-card-content .product-card-image-new {
-    order: 1;
-}
-
-.product-card-content .product-card--price-new {
-    order: 2;
-    font-size: .875rem;
-    line-height: 1.125rem;
-    font-weight: 500;
-    color: #3e3e3e;
-    font-size: 1rem;
-}
-
-.product-card-content .product-card-title-new {
-    order: 3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: flex;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    width: 100%;
-    color: #3e3e3e;
-    font-weight: 400;
-    font-size: .875rem;
-    line-height: 1.25rem;
-    max-height: calc(2*1.25rem);
-}
-
-.product-card-image-new {
-    display: flex;
-    overflow: hidden;
-    height: 122px;
-    width: 122px;
-    padding: 16px;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px;
-    transition: filter .5s;
-    position: relative;
-    background-size: 65%;
-    background-position: 50%;
-    background-repeat: no-repeat;
-}
-
-.product-card-new .add-rapido-carrinho {
-    position: absolute;
-    display: flex;
-    top: 74px;
-    right: 8;
-}
-
-.add-rapido-carrinho .produto-quantidade {
-    width: 100px;
-    height: 38px;
-    border-radius: 10px;
-    justify-content: flex-end;
-    box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
-    overflow: hidden;
-    transition: all 200ms;
-    background-color: white;
-}
-
-.add-rapido-carrinho .produto-quantidade__inicial {
-    width: 38px;
-    border-radius: 50%;
-}
-
-.add-rapido-carrinho .produto-quantidade .btn-icon {
-    min-width: 38px;
-}
-
-.add-rapido-carrinho .produto-quantidade__valor {
-    min-width: 24px;
-    font-size: rem(16);
-}
-
-.add-rapido-carrinho {
-    display: flex;
-    align-items: center;
-}
-
-.add-rapido-carrinho__value {
-    display: inline-block;
-    height: 30px;
-    min-width: 35px;
-    line-height: 34px;
-    text-align: center;
-    font-size: rem(18);
-    font-weight: 500;
-    margin: 3px 0;
-}
-
-.add-rapido-carrinho_inicial .produto-quantidade_btn-decrement {
-    visibility: hidden;
-}
-
-.marmita-counter__value {
-    visibility: hidden;
-}
-
-
-.btn-icon {
-    margin-left: 0;
-    margin-right: 0;
 }

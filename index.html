@@ -14,6 +14,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Fonte -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/index.css?v=1.0.2">
 </head>
@@ -33,7 +38,7 @@
                         <!-- <p class="text-right mt-2"><strong>Total: $X.XX</strong></p> -->
                         <!-- Botão para abrir a sacola -->
                         <button id="sacolaButton" type="button" class="btn" data-toggle="modal"
-                            data-target="#sacolaModal" style="background-color: #f1f1f1;">
+                            data-target="#sacolaModal" style="background-color: #ffffff;">
                             <!-- Ícone da sacola de compras com indicador -->
                             <div class="d-flex align-items-center justify-content-end">
                                 <img src="assets/png/cart.png" alt="Sacola de Compras" class="footer-icon">
@@ -66,7 +71,7 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-secondary p-1">
+                <div class="modal-header bg-dark p-1">
                     <h5 class="modal-title small font-weight-bold" id="productModalLabel">Detalhes do Produto</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                         <span aria-hidden="true">&times;</span>
@@ -91,8 +96,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary btn-add-to-cart btn-sm" id="addToCartButton">Adicionar
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success btn-add-to-cart btn-sm" id="addToCartButton">Adicionar
                         a
                         Sacola</button>
                 </div>
@@ -101,12 +106,13 @@
     </div>
 
     <!-- Modal de Confirmação de Adição ao Carrinho -->
-    <div class="modal fade" id="confirmacaoModal" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel"
+    <div class=" modal fade" id="confirmacaoModal" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel"
         aria-hidden="true">
         <div class="modal-dialog d-flex justify-content-center" role="document">
             <div id="confirmacaoModalContent" class="modal-content">
-                <div class="modal-header bg-secondary p-1" bis_skin_checked="1">
-                    <h5 class="modal-title small font-weight-bold" id="confirmacaoModalLabel">Produto Adicionado</h5>
+                <div class="modal-header bg-dark p-1" bis_skin_checked="1">
+                    <h5 class="modal-title small font-weight-bold" id="confirmacaoModalLabel">Produto
+                        Adicionado</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -126,7 +132,7 @@
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document" style="max-width: 600px;">
             <div class="modal-content" id="sacolaContent">
-                <div class="modal-header bg-secondary p-0">
+                <div class="modal-header bg-dark p-0">
                     <h5 class="modal-title">Minha Sacola</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -144,7 +150,7 @@
                 </div>
                 <div class="modal-footer" id="sacolaFooter">
                     <div class="sacolaTotal"></div>
-                    <button type="button" class="btn btn-info" id="finalizarCompra"
+                    <button type="button" class="btn btn-success" id="finalizarCompra"
                         data-dismiss="modal">Continuar</button>
                 </div>
             </div>
@@ -160,7 +166,7 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-secondary p-0">
+                <div class="modal-header bg-dark p-0">
                     <h5 class="modal-title">Contato</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -181,9 +187,10 @@
                 <div class="modal-footer" id="sacolaFooter">
                     <div class="sacolaTotal"></div>
                     <!-- Botões de Confirmar Pedido e Voltar -->
-                    <button class="btn btn-info" id="continuarEndereco">Continuar</button>
-                    <button class="btn btn-secondary" id="voltarSacola" class="close" data-dismiss="modal"
+                    <button class="btn btn-danger" id="voltarSacola" class="close" data-dismiss="modal"
                         aria-label="Close">Voltar</button>
+                    <button class="btn btn-success" id="continuarEndereco">Continuar</button>
+
                 </div>
             </div>
         </div>
@@ -194,7 +201,7 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-secondary p-0">
+                <div class="modal-header bg-dark p-0">
                     <h5 class="modal-title">Endereço</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -235,13 +242,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer" id="sacolaFooter">
-                        <div class="sacolaTotal"></div>
-                        <!-- Botões de Confirmar Pedido e Voltar -->
-                        <button class="btn btn-info" id="continuarPagamento">Continuar</button>
-                        <button class="btn btn-secondary" id="voltarContato" class="close" data-dismiss="modal"
-                            aria-label="Close">Voltar</button>
-                    </div>
+                </div>
+                <div class="modal-footer" id="sacolaFooter">
+                    <div class="sacolaTotal"></div>
+                    <!-- Botões de Confirmar Pedido e Voltar -->
+                    <button class="btn btn-danger" id="voltarContato" class="close" data-dismiss="modal"
+                        aria-label="Close">Voltar</button>
+                    <button class="btn btn-success" id="continuarPagamento">Continuar</button>
+
                 </div>
             </div>
         </div>
@@ -252,7 +260,7 @@
         aria-labelledby="escolherPagamentoModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-secondary p-0">
+                <div class="modal-header bg-dark p-0">
                     <h5 class="modal-title">Finalizar Pedido</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -282,15 +290,14 @@
                         <textarea class="form-control" id="observacao" rows="3"
                             placeholder="Digite sua observação aqui"></textarea>
                     </div>
-                    <div class="modal-footer" id="pagamentoFooter">
-                        <div class="sacolaTotal"></div>
-                        <!-- Botões de Confirmar Pedido e Voltar -->
-                        <div class="botoes-modal" style="text-align:right;">
-                            <button class="btn btn-secondary mb-1" style="width: 100%;" id="voltarDados" class="close"
-                                data-dismiss="modal" aria-label="Close">Voltar</button>
-                            <button class="btn btn-info" style="width: 100%;" id="confirmarPedido">Finalizar</button>
-
-                        </div>
+                </div>
+                <div class="modal-footer" id="pagamentoFooter">
+                    <div class="sacolaTotal"></div>
+                    <!-- Botões de Confirmar Pedido e Voltar -->
+                    <div class="botoes-modal" style="text-align:left;">
+                        <button class="btn btn-danger mb-1" style="width: 100%;" id="voltarDados" class="close"
+                            data-dismiss="modal" aria-label="Close">Voltar</button>
+                        <button class="btn btn-success" style="width: 100%;" id="confirmarPedido">Finalizar</button>
                     </div>
                 </div>
             </div>

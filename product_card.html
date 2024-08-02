@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Card</title>
+    <style>
+        .product-card {
+            width: 126px;
+            height: 230px;
+            /* border: 1px solid #ddd; */
+            border-radius: 5px;
+            overflow: hidden;
+            /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 125px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image span {
+            width: 100px;
+            height: 100px;
+            display: block;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-card-image__overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            background-color: rgba(69, 71, 69, 0.1);
+            pointer-events: none;
+        }
+
+        .product-info {
+            padding: 10px;
+            text-align: left;
+            height: 95px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.2;
+            max-height: 2.4em;
+            /* Até duas linhas */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-price {
+            font-size: 16px;
+            /* Destaque para o preço */
+            color: #333;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .product-description {
+            font-size: 12px;
+            /* Menor tamanho de fonte */
+            color: #555;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .add-to-cart-btn,
+        .quantity-control {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart-btn {
+            z-index: 1;
+        }
+
+        .quantity-control {
+            display: none;
+            width: auto;
+            height: 30px;
+            background-color: #28a745;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            align-items: center;
+            padding: 0 5px;
+            position: absolute;
+            right: 5px;
+            bottom: 5px;
+        }
+
+        .quantity-control.show {
+            display: flex;
+        }
+
+        .quantity-btn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+
+        .quantity-display {
+            font-size: 14px;
+            color: #fff;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="product-card">
+        <div class="product-image">
+            <span>
+                <div class="product-card-image__overlay"></div>
+                <img src="fotos/26189286000199/5577/5577_0_web.jpg" alt="Product Image">
+            </span>
+            <button class="add-to-cart-btn" onclick="addToCart(this)">+</button>
+            <div class="quantity-control">
+                <button class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>
+                <div class="quantity-display">0</div>
+                <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        <div class="product-info">
+            <div class="product-name">Product Name WIth 2 lines</div>
+            <div class="product-description">Short description</div>
+            <div class="product-price">$19.99</div>
+        </div>
+    </div>
+
+
+    <script>
+        function addToCart(button) {
+            const card = button.closest('.product-card');
+            button.style.display = 'none';
+            const quantityControl = card.querySelector('.quantity-control');
+            quantityControl.classList.add('show');
+            changeQuantity(quantityControl.querySelector('.quantity-btn:last-child'), 1);
+        }
+
+        function changeQuantity(button, change) {
+            const quantityDisplay = button.parentElement.querySelector('.quantity-display');
+            let currentQuantity = parseInt(quantityDisplay.innerText);
+            currentQuantity += change;
+            if (currentQuantity <= 0) {
+                currentQuantity = 0;
+                button.parentElement.classList.remove('show');
+                const addToCartButton = button.closest('.product-card').querySelector('.add-to-cart-btn');
+                addToCartButton.style.display = 'flex';
+            }
+            quantityDisplay.innerText = currentQuantity;
+        }
+    </script>
+</body>
+
+</html>
