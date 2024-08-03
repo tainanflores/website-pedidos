@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/index.css?v=1.0.2">
+    <link rel="stylesheet" href="css/index.css?v=1.0.3">
 </head>
 
 <body>
@@ -34,16 +34,11 @@
                         <input type="text" id="filterInput" class="form-control rounded-pill" placeholder="Pesquisar">
                     </div>
                     <div class="col-3 d-flex justify-content-end pr-0">
-                        <!-- Valor total -->
-                        <!-- <p class="text-right mt-2"><strong>Total: $X.XX</strong></p> -->
-                        <!-- Botão para abrir a sacola -->
                         <button id="sacolaButton" type="button" class="btn" data-toggle="modal"
                             data-target="#sacolaModal" style="background-color: #ffffff;">
-                            <!-- Ícone da sacola de compras com indicador -->
                             <div class="d-flex align-items-center justify-content-end">
                                 <img src="assets/png/cart.png" alt="Sacola de Compras" class="footer-icon">
-                                <span id="carrinho-badge"
-                                    class="badge badge-pill badge-primary">0</span><!-- Indicador de itens no carrinho -->
+                                <span id="carrinho-badge" class="badge badge-pill badge-primary">0</span>
                             </div>
                         </button>
                     </div>
@@ -61,12 +56,10 @@
 
     <div class="app">
     </div>
-    <!-- Footer Fixo -->
     <footer class="footer fixed-bottom bg-light">
         <p class="m-0" style="color: darkslategray; text-align: center;">&copy; 2024 PedidoZap, Todos direitos
             reservados.</p>
     </footer>
-    <!-- Popup para exibir detalhes do produto -->
     <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -105,7 +98,6 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Adição ao Carrinho -->
     <div class=" modal fade" id="confirmacaoModal" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel"
         aria-hidden="true">
         <div class="modal-dialog d-flex justify-content-center" role="document">
@@ -127,7 +119,6 @@
         </div>
     </div>
 
-    <!-- Modal para exibir a sacola -->
     <div id="sacolaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="sacolaModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document" style="max-width: 600px;">
@@ -144,8 +135,6 @@
                             class="img-fluid" style="opacity: 0.3">
                     </div>
                     <ul id="sacolaLista" class="list-group">
-
-                        <!-- Itens da sacola serão adicionados aqui -->
                     </ul>
                 </div>
                 <div class="modal-footer" id="sacolaFooter">
@@ -161,7 +150,6 @@
         <div class="loader"></div>
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" id="finalizarPedidoModal" tabindex="-1" role="dialog" aria-labelledby="pedidoModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -186,7 +174,6 @@
                 </div>
                 <div class="modal-footer" id="sacolaFooter">
                     <div class="sacolaTotal"></div>
-                    <!-- Botões de Confirmar Pedido e Voltar -->
                     <button class="btn btn-danger" id="voltarSacola" class="close" data-dismiss="modal"
                         aria-label="Close">Voltar</button>
                     <button class="btn btn-success" id="continuarEndereco">Continuar</button>
@@ -196,7 +183,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" id="enderecoPedidoModal" tabindex="-1" role="dialog" aria-labelledby="pedidoModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -245,7 +231,6 @@
                 </div>
                 <div class="modal-footer" id="sacolaFooter">
                     <div class="sacolaTotal"></div>
-                    <!-- Botões de Confirmar Pedido e Voltar -->
                     <button class="btn btn-danger" id="voltarContato" class="close" data-dismiss="modal"
                         aria-label="Close">Voltar</button>
                     <button class="btn btn-success" id="continuarPagamento">Continuar</button>
@@ -255,7 +240,6 @@
         </div>
     </div>
 
-    <!-- Modal Forma de Pagamento-->
     <div class="modal fade" id="escolherPagamentoModal" tabindex="-1" role="dialog"
         aria-labelledby="escolherPagamentoModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -267,7 +251,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Forma de Pagamento -->
                     <div class="form-group">
                         <label for="formaPagamento"><strong>Forma de Pagamento</strong></label>
                         <select class="form-control" id="formaPagamento">
@@ -279,7 +262,6 @@
                         </select>
                     </div>
 
-                    <!-- Campo "Troco para quanto?" -->
                     <div class="form-group" id="trocoDiv" style="display: none;">
                         <label for="troco">Troco para quanto?</label>
                         <input type="number" placeholder="Digite 0 se não precisar de troco" class="form-control"
@@ -293,7 +275,6 @@
                 </div>
                 <div class="modal-footer" id="pagamentoFooter">
                     <div class="sacolaTotal"></div>
-                    <!-- Botões de Confirmar Pedido e Voltar -->
                     <div class="botoes-modal" style="text-align:left;">
                         <button class="btn btn-danger mb-1" style="width: 100%;" id="voltarDados" class="close"
                             data-dismiss="modal" aria-label="Close">Voltar</button>
@@ -307,42 +288,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Ou inclua o JavaScript (opcional) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
-    <script src="js/index.js?v=1.1.3"></script>
+    <script src="js/index.js?v=0.0.1"></script>
 </body>
 
 </html>
-
-<!-- <div class="produtos-categoria-secao" id="${nomeFormatado.trim()}">
-    <h2 class="produtos-categoria-secao__titulo" id="categoria-${categoria.ID_GRUPO}">${nomeFormatado.trim()}</h2>
-    <a class="produtos-categoria-secao__ver-todos ver-mais" data-categoria="${categoria.GRUP_DESCRICAO}">Ver todos</a>
-    <section class="produtos-categoria-secao__produtos-grid">
-        ${produtosCategoria.map(createProducCard).join('')}
-    </section>
-</div> -->
-
-<!-- <div class="product-card-new" id="${produto.ID_PROD}" data-product-id="${produto.ID_PROD}">
-    <a class="product-card-content" data-toggle="modal" data-target="#productModal">
-        <div class="product-card-image-new">
-            <span
-                style="box-sizing: border-box; display: block; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; max-width: 100%;">
-                <img src="/fotos/${lojaID}/${produto.ID_PROD}/${produto.ID_PROD}_thumb.jpg" loading="lazy"
-                    onerror="this.src='${imgOnError}'" alt="COD-${produto.ID_PROD}"
-                    style="display: block; max-width: 100%; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px;">
-            </span>
-            <span class="product-card-title-new" title="${nomeFormatado.trim()}">${nomeFormatado.trim()}</span>
-            <div class="product-card--price-new">R$ ${produto.VR_VENDA3_PRO.toFixed(2)}</div>
-        </div>
-        <div class="add-rapido-carrinho">
-            <div class="produto-quantidade produto-quantidade__inicial">
-                <button type="button" tabindex="0" class="produto-quantidade_btn-decrement btn btn-outline-primary btn-sm btn-icon"
-                    aria-label="Diminuir quantidade">━</button>
-                <div class="produto-quantidade__valor"></div>
-                <button type="button" tabindex="0" class="btn btn-outline-primary btn-sm btn-icon"
-                    aria-label="Aumentar quantidade">✚</button>
-            </div>
-        </div>
-    </a>
-</div> -->

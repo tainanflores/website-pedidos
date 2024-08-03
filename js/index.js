@@ -242,12 +242,13 @@ document.addEventListener('click', function (event) {
 
 document.addEventListener('click', function (event) {
     const voltarTodosBtn = $('.voltar-todos');
-    if (voltarTodosBtn.length == 0) {
-        mainSection.scrollTop = 0;
-        sidebarScroll.scrollTop = 0;
-
-    } else if (event.target.classList.contains('ver-todos') || event.target.classList.contains('voltar-todos')) {
-        backToInitialView();
+    if (event.target.classList.contains('ver-todos') || event.target.classList.contains('voltar-todos')) {
+        if (voltarTodosBtn.length == 0) {
+            mainSection.scrollTop = 0;
+            sidebarScroll.scrollTop = 0;
+        } else {
+            backToInitialView();
+        }
     }
 });
 
